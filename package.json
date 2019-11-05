@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/CS465-565-Fall19-Group-Project/SportsScoreboard/issues"
   },
-  "homepage": "https://github.com/CS465-565-Fall19-Group-Project/SportsScoreboard#readme"
+  "homepage": "https://github.com/CS465-565-Fall19-Group-Project/SportsScoreboard#readme",
+  "dependencies": {
+    "axios": "^0.19.0"
+  }
 }
