@@ -65,12 +65,12 @@ const get_schedule = async (sport, league, team) => {
   )}/teams/${team}/schedule`;
   const params = {};
 
-  const scoreboard = await get_data(uri, params);
-  if (scoreboard != null) {
-    return new ESPNObjects.ESPNScoreboard().init(scoreboard);
+  const schedule = await get_data(uri, params);
+  if (schedule != null) {
+    return new ESPNObjects.ESPNTeamSchedule().init(schedule);
   } else {
     console.log(
-      `Cannot get scoreboard for sport=${sport} and league=${league}`
+      `Cannot get schedule for sport=${sport}, league=${league}, and team=${team}`
     );
     return null;
   }
@@ -79,10 +79,6 @@ const get_schedule = async (sport, league, team) => {
 let uri =
   "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/ore/schedule";
 const params = {};
-const data = get_scoreboard("football", "college-football").then(output => {
-  /*output.events.forEach(element => {
-    console.log(element.competitions[0]);
-  });*/
-  let scoreboard = new ESPNObjects.ESPNScoreboard().init(output);
-  console.log(scoreboard.events[0].competitions[0].competitors[0]);
+const data = get_schedule("basketball", "nba", "portland").then(output => {
+  console.log(output);
 });

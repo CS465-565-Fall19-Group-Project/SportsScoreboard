@@ -233,6 +233,8 @@ class ESPNCompetitor {
 
 module.exports = {
   ESPNScoreboard,
+  ESPNTeamSchedule,
+  ESPNTeam,
   ESPNLeague,
   ESPNEvent,
   ESPNCompetition,
