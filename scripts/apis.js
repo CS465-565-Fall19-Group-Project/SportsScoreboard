@@ -1,5 +1,8 @@
+//SOURCE: https://gist.github.com/akeaswaran/b48b02f1c94f873c6655e7129910fc3b
+
 //File containing API calls to get score data
 const axios = require("axios");
+const ESPNObjects = require("./sdk/espn_classes.js");
 
 /**
  * Method to convert a Date object into string form 'YYYYMMDD' required for ESPN API parameters
@@ -34,8 +37,8 @@ const get_data = async (uri, params) => {
     });
 };
 
-const get_scores = async (sport, league) => {
-  const uri = `http://site.api.espn.com/apis/site/v2/sports/${sport}/${league.replace(
+const get_scoreboard = async (sport, league) => {
+  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${league.replace(
     /\\s/gi,
     "-"
   )}/scoreboard`;
@@ -43,19 +46,43 @@ const get_scores = async (sport, league) => {
     calendar: "blacklist",
     dates: get_date_string(new Date())
   };
-  console.log(uri);
-  console.log(params);
 
-  return await get_data(uri, params);
+  const scoreboard = await get_data(uri, params);
+  if (scoreboard != null) {
+    return new ESPNObjects.ESPNScoreboard().init(scoreboard);
+  } else {
+    console.log(
+      `Cannot get scoreboard for sport=${sport} and league=${league}`
+    );
+    return null;
+  }
+};
+
+const get_schedule = async (sport, league, team) => {
+  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${league.replace(
+    /\\s/gi,
+    "-"
+  )}/teams/${team}/schedule`;
+  const params = {};
+
+  const scoreboard = await get_data(uri, params);
+  if (scoreboard != null) {
+    return new ESPNObjects.ESPNScoreboard().init(scoreboard);
+  } else {
+    console.log(
+      `Cannot get scoreboard for sport=${sport} and league=${league}`
+    );
+    return null;
+  }
 };
 
 let uri =
-  "http://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard";
-const params = {
-  calendar: "blacklist",
-  dates: "20191105"
-};
-const data = get_scores("basketball", "nba").then(output => {
-  console.log(output);
-  //console.log(output.events[0].competitions[0].competitors);
+  "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/ore/schedule";
+const params = {};
+const data = get_scoreboard("football", "college-football").then(output => {
+  /*output.events.forEach(element => {
+    console.log(element.competitions[0]);
+  });*/
+  let scoreboard = new ESPNObjects.ESPNScoreboard().init(output);
+  console.log(scoreboard.events[0].competitions[0].competitors[0]);
 });

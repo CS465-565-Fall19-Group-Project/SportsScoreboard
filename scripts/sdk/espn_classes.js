@@ -14,6 +14,70 @@ class ESPNScoreboard {
     this.events = api_data.events.map(obj => new ESPNEvent().init(obj));
     return this;
   }
+
+  getEventsByCompetitor(searchString) {
+    return this.events.filter(event => {
+      return event.has_competitor(searchString);
+    });
+  }
+}
+
+class ESPNTeamSchedule {
+  constructor() {
+    this.timestamp = "";
+    this.status = "";
+    this.season = {};
+    this.team = {};
+    this.events = [];
+    this.requestedSeason = {};
+  }
+
+  init(api_data) {
+    Object.assign(this, api_data);
+    //this.events = api_data.events.map(obj => new ESPNEvent().init(obj));
+    return this;
+  }
+
+  getEventsByCompetitor(searchString) {
+    return this.events.filter(event => {
+      return event.has_competitor(searchString);
+    });
+  }
+}
+
+class ESPNTeam {
+  /**
+   * @constructor
+   * @property {ESPNLeague[]} leagues
+   * @property {ESPNEvent[]} events
+   */
+  constructor() {
+    this.id = "";
+    this.abbreviation = "";
+    this.location = "";
+    this.name = "";
+    this.displayName = "";
+    this.venueLink = "";
+    this.clubhouse = "";
+    this.color = "";
+    this.logo = "";
+    this.recordSummary = "";
+    this.seasonSummary = "";
+    this.standingsSummary = "";
+    groups = {};
+  }
+
+  init(api_data) {
+    Object.assign(this, api_data);
+    this.events = api_data.events.map(obj => new ESPNEvent().init(obj));
+    return this;
+  }
+
+  getEventsByCompetitor(searchString) {
+    return this.events.filter(event => {
+      return event.has_competitor(searchString);
+    });
+  }
 }
 
 class ESPNLeague {
@@ -61,6 +125,15 @@ class ESPNEvent {
     this.status = new ESPNEventStatus().init(data.status);
     return this;
   }
+
+  has_competitor(name) {
+    this.competitions.forEach(competitions => {
+      if (competitions.has_competitor(name)) {
+        return true;
+      }
+    });
+    return false;
+  }
 }
 
 class ESPNCompetition {
@@ -92,6 +165,15 @@ class ESPNCompetition {
     );
     this.status = new ESPNEventStatus().init(data.status);
     return this;
+  }
+
+  has_competitor(name) {
+    this.competitors.forEach(competitor => {
+      if (competitor.is_match(name)) {
+        return true;
+      }
+    });
+    return false;
   }
 }
 
@@ -134,6 +216,18 @@ class ESPNCompetitor {
   init(data) {
     Object.assign(this, data);
     return this;
+  }
+
+  /**
+   * Method to determine if competitor is a match for search string.
+   * Looks for partial match in full name or exact match for abbreviation
+   * @param {string} searchString
+   */
+  is_match(searchString) {
+    return (
+      this.team.displayName.includes(searchString) ||
+      this.team.abbreviation === searchString
+    );
   }
 }
 
