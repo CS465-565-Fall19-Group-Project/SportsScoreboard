@@ -127,11 +127,11 @@ class ESPNEvent {
   }
 
   has_competitor(name) {
-    this.competitions.forEach(competitions => {
-      if (competitions.has_competitor(name)) {
+    for (let i = 0; i < this.competitions.length; i++) {
+      if (this.competitions[i].has_competitor(name)) {
         return true;
       }
-    });
+    }
     return false;
   }
 }
@@ -168,11 +168,11 @@ class ESPNCompetition {
   }
 
   has_competitor(name) {
-    this.competitors.forEach(competitor => {
-      if (competitor.is_match(name)) {
+    for (let i = 0; i < this.competitors.length; i++) {
+      if (this.competitors[i].is_match(name)) {
         return true;
       }
-    });
+    }
     return false;
   }
 }
