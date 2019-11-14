@@ -34,7 +34,7 @@ class ESPNTeamSchedule {
 
   init(api_data) {
     Object.assign(this, api_data);
-    //this.events = api_data.events.map(obj => new ESPNEvent().init(obj));
+    this.team = new ESPNTeamSummary().init(api_data.team);
     return this;
   }
 
@@ -48,8 +48,53 @@ class ESPNTeamSchedule {
 class ESPNTeam {
   /**
    * @constructor
-   * @property {ESPNLeague[]} leagues
-   * @property {ESPNEvent[]} events
+   */
+  constructor() {
+    this.id = "";
+    this.uid = "";
+    this.slug = "";
+    this.abbreviation = "";
+    this.location = "";
+    this.name = "";
+    this.nickname = "";
+    this.displayName = "";
+    this.shortDisplayName = "";
+    this.color = "";
+    this.alternateColor = "";
+    this.isActive = true;
+    this.isAllStar = false;
+    this.logos = [];
+    this.record = [];
+    this.links = [];
+  }
+
+  init(api_data) {
+    Object.assign(this, api_data);
+    return this;
+  }
+
+  getLogos() {
+    return this.logos;
+  }
+
+  getColors() {
+    let colors = [];
+    if (this.color !== "") {
+      colors.push(`#${this.color}`);
+    }
+    if (this.alternateColor !== "") {
+      colors.push(`#${this.alternateColor}`);
+    }
+    if (colors.length === 0) {
+      colors.push(`#000000`);
+    }
+    return colors;
+  }
+}
+
+class ESPNTeamSummary {
+  /**
+   * @constructor
    */
   constructor() {
     this.id = "";
@@ -57,26 +102,27 @@ class ESPNTeam {
     this.location = "";
     this.name = "";
     this.displayName = "";
-    this.venueLink = "";
     this.clubhouse = "";
     this.color = "";
     this.logo = "";
+    this.logos = [];
     this.recordSummary = "";
     this.seasonSummary = "";
     this.standingsSummary = "";
-    groups = {};
+    this.groups = {};
   }
 
   init(api_data) {
     Object.assign(this, api_data);
-    this.events = api_data.events.map(obj => new ESPNEvent().init(obj));
     return this;
   }
 
-  getEventsByCompetitor(searchString) {
-    return this.events.filter(event => {
-      return event.has_competitor(searchString);
-    });
+  getLogos() {
+    return [this.logo];
+  }
+
+  getColors() {
+    return [`#${this.color}`];
   }
 }
 
@@ -127,11 +173,11 @@ class ESPNEvent {
   }
 
   has_competitor(name) {
-    this.competitions.forEach(competitions => {
-      if (competitions.has_competitor(name)) {
+    for (let i = 0; i < this.competitions.length; i++) {
+      if (this.competitions[i].has_competitor(name)) {
         return true;
       }
-    });
+    }
     return false;
   }
 }
@@ -168,11 +214,11 @@ class ESPNCompetition {
   }
 
   has_competitor(name) {
-    this.competitors.forEach(competitor => {
-      if (competitor.is_match(name)) {
+    for (let i = 0; i < this.competitors.length; i++) {
+      if (this.competitors[i].is_match(name)) {
         return true;
       }
-    });
+    }
     return false;
   }
 }

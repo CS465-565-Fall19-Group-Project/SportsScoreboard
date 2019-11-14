@@ -76,9 +76,14 @@ const get_schedule = async (sport, league, team) => {
   }
 };
 
-let uri =
+/*let uri =
   "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/ore/schedule";
 const params = {};
 const data = get_schedule("basketball", "nba", "portland").then(output => {
   console.log(output);
-});
+});*/
+
+module.exports = {
+  get_scoreboard,
+  get_schedule
+};
