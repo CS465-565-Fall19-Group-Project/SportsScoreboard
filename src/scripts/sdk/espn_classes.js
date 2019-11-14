@@ -1,4 +1,4 @@
-export class ESPNScoreboard {
+class ESPNScoreboard {
   /**
    * @constructor
    * @property {ESPNLeague[]} leagues
@@ -22,7 +22,7 @@ export class ESPNScoreboard {
   }
 }
 
-export class ESPNTeamSchedule {
+class ESPNTeamSchedule {
   constructor() {
     this.timestamp = "";
     this.status = "";
@@ -45,7 +45,7 @@ export class ESPNTeamSchedule {
   }
 }
 
-export class ESPNTeam {
+class ESPNTeam {
   /**
    * @constructor
    */
@@ -92,7 +92,7 @@ export class ESPNTeam {
   }
 }
 
-export class ESPNTeamSummary {
+class ESPNTeamSummary {
   /**
    * @constructor
    */
@@ -126,7 +126,7 @@ export class ESPNTeamSummary {
   }
 }
 
-export class ESPNLeague {
+class ESPNLeague {
   /**
    * @constructor
    * @property {string[]} calendars Array of UTC string  representing days in which league has games
@@ -151,7 +151,7 @@ export class ESPNLeague {
   }
 }
 
-export class ESPNEvent {
+class ESPNEvent {
   constructor() {
     this.id = "";
     this.uid = "";
@@ -182,7 +182,7 @@ export class ESPNEvent {
   }
 }
 
-export class ESPNCompetition {
+class ESPNCompetition {
   constructor() {
     this.id = "";
     this.uid = "";
@@ -223,7 +223,7 @@ export class ESPNCompetition {
   }
 }
 
-export class ESPNEventStatus {
+class ESPNEventStatus {
   constructor() {
     this.clock = 0;
     this.displayClock = "";
@@ -245,7 +245,7 @@ export class ESPNEventStatus {
   }
 }
 
-export class ESPNCompetitor {
+class ESPNCompetitor {
   constructor() {
     this.id = "";
     this.uid = "";

@@ -1,8 +1,8 @@
 //SOURCE: https://gist.github.com/akeaswaran/b48b02f1c94f873c6655e7129910fc3b
 
 //File containing API calls to get score data
-import * as axios from "axios";
-import * as ESPNObjects from "./sdk/espn_classes.js.js";
+const axios = require("axios");
+const ESPNObjects = require("./sdk/espn_classes.js");
 
 /**
  * Method to convert a Date object into string form 'YYYYMMDD' required for ESPN API parameters
@@ -43,7 +43,7 @@ const get_data = async (uri, params) => {
  * @param {string} league
  * @return {ESPNScoreboard}
  */
-export const get_scoreboard = async (sport, league) => {
+const get_scoreboard = async (sport, league) => {
   const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
     .toLowerCase()
     .replace(/\s/gi, "-")}/scoreboard`;
@@ -70,7 +70,7 @@ export const get_scoreboard = async (sport, league) => {
  * @param {string} team Partial team name or abbreviation (search functionality, not positive what will match so be clear as possible)
  * @return {ESPNTeamSchedule}
  */
-export const get_schedule = async (sport, league, team) => {
+const get_schedule = async (sport, league, team) => {
   const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
     .toLowerCase()
     .replace(/\s/gi, "-")}/teams/${team}/schedule`;
@@ -93,7 +93,7 @@ export const get_schedule = async (sport, league, team) => {
  * @param {string} league
  * @return {ESPNTeam[]}
  */
-export const get_teams = async (sport, league) => {
+const get_teams = async (sport, league) => {
   const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
     .toLowerCase()
     .replace(/\s/gi, "-")}/teams`;
