@@ -1,4 +1,4 @@
-const apis = require("./apis.js");
+import * as apis from "./apis.js.js";
 
 window.addEventListener("DOMContentLoaded", async () => {
   apis.get_schedule("football", "college-football", "oregon").then(schedule => {
