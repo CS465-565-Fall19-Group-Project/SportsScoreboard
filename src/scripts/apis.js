@@ -16,7 +16,7 @@ const get_date_string = date => {
 };
 
 /**
- *
+ * Generic method for getting data from API call
  * @param {string} uri  URI string or request
  * @param {object} params JSON object mapping query parameter to a value (e.g. { foo: bar, foo2: baz })
  */
@@ -37,11 +37,16 @@ const get_data = async (uri, params) => {
     });
 };
 
+/**
+ * Method to get scoreboard for TODAYs games for a given sport/league
+ * @param {string} sport
+ * @param {string} league
+ * @return {ESPNScoreboard}
+ */
 const get_scoreboard = async (sport, league) => {
-  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${league.replace(
-    /\\s/gi,
-    "-"
-  )}/scoreboard`;
+  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
+    .toLowerCase()
+    .replace(/\s/gi, "-")}/scoreboard`;
   const params = {
     calendar: "blacklist",
     dates: get_date_string(new Date())
@@ -58,11 +63,17 @@ const get_scoreboard = async (sport, league) => {
   }
 };
 
+/**
+ * Method to get a full schedule for a team in a given sport/league
+ * @param {string} sport
+ * @param {string} league
+ * @param {string} team Partial team name or abbreviation (search functionality, not positive what will match so be clear as possible)
+ * @return {ESPNTeamSchedule}
+ */
 const get_schedule = async (sport, league, team) => {
-  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport}/${league.replace(
-    /\\s/gi,
-    "-"
-  )}/teams/${team}/schedule`;
+  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
+    .toLowerCase()
+    .replace(/\s/gi, "-")}/teams/${team}/schedule`;
   const params = {};
 
   const schedule = await get_data(uri, params);
@@ -76,14 +87,42 @@ const get_schedule = async (sport, league, team) => {
   }
 };
 
+/**
+ * Method to get a list of all teams for a sport and league
+ * @param {string} sport
+ * @param {string} league
+ * @return {ESPNTeam[]}
+ */
+const get_teams = async (sport, league) => {
+  const uri = `https://site.api.espn.com/apis/site/v2/sports/${sport.toLowerCase()}/${league
+    .toLowerCase()
+    .replace(/\s/gi, "-")}/teams`;
+  const params = {
+    limit: 1000
+  };
+  const output = await get_data(uri, params);
+  if (output != null) {
+    return output.sports[0].leagues[0].teams.map(t =>
+      new ESPNObjects.ESPNTeam().init(t.team)
+    );
+  } else {
+    console.log(`Cannot get teams for sport=${sport} and league=${league}`);
+    return null;
+  }
+};
+
 /*let uri =
-  "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/ore/schedule";
-const params = {};
-const data = get_schedule("basketball", "nba", "portland").then(output => {
-  console.log(output);
+  "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams";
+const params = {
+  limit: 1000
+};
+
+const data = get_schedule("basketball", "nba", "por").then(output => {
+  console.log(output.events[0]);
 });*/
 
 module.exports = {
   get_scoreboard,
-  get_schedule
+  get_schedule,
+  get_teams
 };
