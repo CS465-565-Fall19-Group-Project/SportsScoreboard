@@ -2,7 +2,7 @@ import React from "react";
 import NavBar from "./NavBar";
 import Home from "./Home";
 import Teams from "./Teams";
-import { BrowserRouter as Router, Switch, Route,} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import * as apis from "./scripts/apis";
 
 function App() {
@@ -10,10 +10,10 @@ function App() {
     <Router>
       <NavBar />
       {/*
-    Using the Browser router package, clicking on a link in the navbar will change the route,
-    Now that the path is changed <Route> will execute the js file specific to the route. Now
-    we can seperate each page into its own javascript file for better organization.
-  */}
+       Using the Browser router package, clicking on a link in the navbar will change the route,
+        Now that the path is changed <Route> will execute the js file specific to the route. Now
+        we can seperate each page into its own javascript file for better organization.
+    */}
       <Switch>
         {/*
     **These files are not yet implemented. get rid of the comment when they are**
