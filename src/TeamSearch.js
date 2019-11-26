@@ -3,25 +3,23 @@ import "bootstrap/dist/css/bootstrap.css";
 import classnames from "classnames";
 import apis from "./scripts/apis";
 import {
-  InputGroup,
+  Table,
   Input,
-  InputGroupAddon,
   Button,
   Form,
   FormGroup,
   Label,
   Row,
   Col,
-  Container,
-  CardImg
+  Container
 } from "reactstrap";
 
 const TeamSearchBar = ({ fieldToFuncDictionary }) => {
   return (
     <Container>
-      <Row className="justify-content-md-center">
-        <Col sm="8">
-          <Form>
+      <Form onSubmit={fieldToFuncDictionary["search"].onSubmit}>
+        <Row className="justify-content-md-center">
+          <Col sm="2">
             <FormGroup id="sportSelect">
               <Label for="sportSelect">Sport</Label>
               <Input
@@ -33,8 +31,10 @@ const TeamSearchBar = ({ fieldToFuncDictionary }) => {
                 {fieldToFuncDictionary["sport"].getOptions()}
               </Input>
             </FormGroup>
+          </Col>
+          <Col sm="2">
             <FormGroup id="leagueSelect">
-              <Label for="leagueSelect">Sport</Label>
+              <Label for="leagueSelect">League</Label>
               <Input
                 type="select"
                 name="league"
@@ -44,21 +44,47 @@ const TeamSearchBar = ({ fieldToFuncDictionary }) => {
                 {fieldToFuncDictionary["league"].getOptions()}
               </Input>
             </FormGroup>
-            <InputGroup>
+          </Col>
+          <Col sm="4">
+            <FormGroup id="searchInput">
+              <Label for="searchInput">Team Filter</Label>
               <Input
                 type="search"
                 name="search"
-                id="homeSearchBar"
-                placeholder="Search for players or teams!"
+                id="teamSearchInput"
+                onChange={fieldToFuncDictionary["search"].onChange}
+                placeholder="Search teams..."
               />
-              <InputGroupAddon addonType="append">
-                <Button>
-                  <i class="fa fa-search"></i>
-                </Button>
-              </InputGroupAddon>
-            </InputGroup>
-          </Form>
-        </Col>
+            </FormGroup>
+          </Col>
+          <Col sm="1">
+            <FormGroup id="searchButton">
+              <Label for="searchButton">Search</Label>
+              <Button>
+                <i className="fa fa-search"></i>
+              </Button>
+            </FormGroup>
+          </Col>
+        </Row>
+      </Form>
+    </Container>
+  );
+};
+
+const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
+  return (
+    <Container>
+      <Row className="justify-content-md-center">
+        <Table striped>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Selected</th>
+              <th>Team</th>
+            </tr>
+          </thead>
+          <tbody>{fieldToFuncDictionary["teams"].getRows()}</tbody>
+        </Table>
       </Row>
     </Container>
   );
@@ -81,12 +107,13 @@ const EVENTMAPPING = {
   }
 };
 
-const TeamSearch = () => {
-  const initialSport = Object.keys(EVENTMAPPING)[0];
-  const initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
+const TeamSearch = props => {
+  let initialSport = Object.keys(EVENTMAPPING)[0];
+  let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
   const [sportValue, setSport] = useState(initialSport);
   const [leagueValue, setLeague] = useState(initialLeague);
   const [searchValue, setSearch] = useState("");
+  const [teamValues, setTeams] = useState([]);
 
   const data = {
     sport: {
@@ -104,12 +131,56 @@ const TeamSearch = () => {
     league: {
       getOptions: event => {
         return Object.keys(EVENTMAPPING[sportValue]).map(value => {
-          console.log(value);
           return <option key={value}>{value.toUpperCase()}</option>;
         });
       },
       onChange: event => {
         setLeague(event.target.value.toLowerCase());
+      }
+    },
+    search: {
+      onChange: event => {
+        setSearch(event.target.value);
+      },
+      onSubmit: async event => {
+        event.preventDefault();
+        const teams = await apis.get_teams(sportValue, leagueValue);
+        if (teams != null) {
+          const searchedTeams = teams
+            .filter(team => {
+              return team.is_match(searchValue);
+            })
+            .map(team => {
+              return {
+                team: team,
+                selected: false
+              };
+            });
+          setTeams(searchedTeams);
+        } else {
+          setTeams([]);
+        }
+      }
+    },
+    teams: {
+      getRows: () => {
+        if (teamValues.length == 0) {
+          return (
+            <tr>
+              <th scope="row">No matching teams</th>
+            </tr>
+          );
+        } else {
+          return teamValues.map((tv, index) => {
+            return (
+              <tr key={tv.team.abbreviation}>
+                <th scope="row">{index}</th>
+                <td>{tv.selected}</td>
+                <td>{tv.team.displayName}</td>
+              </tr>
+            );
+          });
+        }
       }
     }
   };
@@ -117,6 +188,7 @@ const TeamSearch = () => {
   return (
     <Container>
       <TeamSearchBar fieldToFuncDictionary={data} />
+      <TeamSearchGrid fieldToFuncDictionary={data} />
     </Container>
   );
 };

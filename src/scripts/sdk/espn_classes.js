@@ -73,6 +73,13 @@ class ESPNTeam {
     return this;
   }
 
+  is_match(searchString) {
+    return (
+      this.displayName.includes(searchString) ||
+      this.abbreviation === searchString
+    );
+  }
+
   getLogos() {
     return this.logos;
   }
