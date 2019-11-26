@@ -74,10 +74,8 @@ class ESPNTeam {
   }
 
   is_match(searchString) {
-    return (
-      this.displayName.includes(searchString) ||
-      this.abbreviation === searchString
-    );
+    const regex = new RegExp(searchString, "i");
+    return regex.test(this.displayName) || regex.test(this.abbreviation);
   }
 
   getLogos() {
@@ -277,9 +275,9 @@ class ESPNCompetitor {
    * @param {string} searchString
    */
   is_match(searchString) {
+    const regex = new RegExp(searchString, "i");
     return (
-      this.team.displayName.includes(searchString) ||
-      this.team.abbreviation === searchString
+      regex.test(this.team.displayName) || regex.test(this.team.abbreviation)
     );
   }
 }

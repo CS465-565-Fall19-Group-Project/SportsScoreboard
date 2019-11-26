@@ -3,7 +3,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import classnames from "classnames";
 import apis from "./scripts/apis";
 import {
+  Card,
+  CardImg,
+  CardTitle,
   Table,
+  Image,
   Input,
   Button,
   Form,
@@ -71,20 +75,30 @@ const TeamSearchBar = ({ fieldToFuncDictionary }) => {
   );
 };
 
-const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
+const TeamSearchTable = ({ fieldToFuncDictionary }) => {
   return (
     <Container>
       <Row className="justify-content-md-center">
         <Table striped>
           <thead>
             <tr>
-              <th>#</th>
+              <th style={{ width: "5%" }}>Track</th>
               <th>Selected</th>
-              <th>Team</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>{fieldToFuncDictionary["teams"].getRows()}</tbody>
         </Table>
+      </Row>
+    </Container>
+  );
+};
+
+const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
+  return (
+    <Container>
+      <Row className="justify-content-md-center">
+        {fieldToFuncDictionary["teams"].getCards()}
       </Row>
     </Container>
   );
@@ -125,7 +139,8 @@ const TeamSearch = props => {
       onChange: event => {
         let choice = event.target.value.toLowerCase();
         setSport(choice);
-        setLeague(EVENTMAPPING[choice]);
+        console.log(EVENTMAPPING[choice]);
+        setLeague(Object.keys(EVENTMAPPING[choice])[0]);
       }
     },
     league: {
@@ -144,7 +159,8 @@ const TeamSearch = props => {
       },
       onSubmit: async event => {
         event.preventDefault();
-        const teams = await apis.get_teams(sportValue, leagueValue);
+        const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
+        const teams = await apis.get_teams(sportValue, leagueAbbrev);
         if (teams != null) {
           const searchedTeams = teams
             .filter(team => {
@@ -160,6 +176,7 @@ const TeamSearch = props => {
         } else {
           setTeams([]);
         }
+        console.log(teamValues);
       }
     },
     teams: {
@@ -167,17 +184,65 @@ const TeamSearch = props => {
         if (teamValues.length == 0) {
           return (
             <tr>
-              <th scope="row">No matching teams</th>
+              <th scope="row" colSpan="3" style={{ textAlign: "center" }}>
+                No matching teams
+              </th>
             </tr>
           );
         } else {
           return teamValues.map((tv, index) => {
             return (
-              <tr key={tv.team.abbreviation}>
-                <th scope="row">{index}</th>
-                <td>{tv.selected}</td>
+              <tr
+                key={tv.team.abbreviation}
+                onChange={() => {
+                  console.log("CHanged");
+                }}
+              >
+                <th style={{ textAlign: "center" }}>
+                  <Input
+                    id={`teamSelected${index}`}
+                    type="checkbox"
+                    checked={tv.selected}
+                    onChange={event => {
+                      tv.selected = !tv.selected;
+                      console.log(tv);
+                    }}
+                  />
+                </th>
                 <td>{tv.team.displayName}</td>
+                <td></td>
               </tr>
+            );
+          });
+        }
+      },
+      getCards: () => {
+        if (teamValues.length == 0) {
+          return (
+            <Row
+              className="justify-content-md-center"
+              style={{ backgroundColor: "lightgray" }}
+            >
+              No matching teams
+            </Row>
+          );
+        } else {
+          return teamValues.map((tv, index) => {
+            return (
+              <Card
+                key={index}
+                style={{ width: "200px", margin: "10px", textAlign: "center" }}
+                onChange={() => {
+                  console.log("CHanged");
+                }}
+              >
+                <CardImg
+                  top
+                  src={tv.team.getLogos()[0].href}
+                  alt="card-team-img"
+                ></CardImg>
+                <CardTitle>{tv.team.displayName}</CardTitle>
+              </Card>
             );
           });
         }
