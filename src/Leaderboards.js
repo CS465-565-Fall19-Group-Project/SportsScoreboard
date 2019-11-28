@@ -23,6 +23,8 @@ class Leaderboards extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      anchor: null,
+      basketballFlag: false,
       activeTab: "1",
       length: null,
       teams: [
@@ -37,6 +39,14 @@ class Leaderboards extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.toggle = this.toggle.bind(this);
+  }
+
+  __onEvent(sport) {
+    if (sport === "basketball") {
+      this.setState({
+        basketballFlag: true
+      });
+    }
   }
 
   toggle(tab) {
@@ -70,8 +80,8 @@ class Leaderboards extends Component {
     );
   }
 
-  loadBasketballTeams() {
-    apis.get_teams("basketball", "nba").then(
+  loadTeams(anchor, sport, league) {
+    apis.get_teams(sport, league).then(
       response =>
         this.setState({ length: response.length }) +
         response.forEach(
@@ -91,19 +101,23 @@ class Leaderboards extends Component {
           //However by doing .shift() it simply removes the first element so problem solved.
         ) +
         this.state.teams.shift() +
-        console.log(this.state.teams) +
-        this.spawnCard()
+        console.log(this.state.teams) 
+        +this.spawnCard(anchor)
     );
   }
 
-  spawnCard() {
+  spawnCard(anchor) {
     //loop through all teams and create a card for each one!
+    console.log(document.getElementById("tab1-anchor"));
     this.state.teams.forEach(function(element) {
       //create card container.
-      var appendTo = document.getElementById("append");
+      var column = document.createElement("col");
+      column.clasList = "col-2";
+      anchor.appendChild(column);
+
       var card = document.createElement("div");
       card.classList = "card";
-      appendTo.appendChild(card);
+      column.appendChild(card);
 
       //create card body container
       var cardBody = document.createElement("div");
@@ -126,6 +140,15 @@ class Leaderboards extends Component {
       cardBody.appendChild(cardTitle);
     });
   }
+  test(element){
+    if(!element) return;
+   var test = document.createElement('div');
+   element.appendChild(test); 
+  }
+  componentDidMount(){
+    this.loadTeams(document.getElementById("tab1-anchor"), "basketball", "nba");
+    this.forceUpdate();
+  }
   render() {
     return (
       <div>
@@ -144,7 +167,7 @@ class Leaderboards extends Component {
             <NavLink
               className={classnames({ active: this.state.activeTab === "2" })}
               onClick={() => {
-                this.toggle("2"); this.loadBasketballTeams();
+                this.toggle("2");
               }}
             >
               Basketball
@@ -153,18 +176,14 @@ class Leaderboards extends Component {
         </Nav>
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
-            {this.state.activeTab == 1 ? <div id="tab1-append">Tab 1 Contents</div> : null}
+            {this.state.activeTab == 1 ? (
+              <row id="tab1-anchor">test</row>
+            ) : null}
           </TabPane>
           <TabPane tabId="2">
             {this.state.activeTab == 2 ? <h4>Tab 2 Contents</h4> : null}
           </TabPane>
         </TabContent>
-        <div>
-          <button className="button" onClick={this.handleClick}>
-            Click Me
-          </button>
-          <div id="append"></div>
-        </div>
       </div>
     );
   }
