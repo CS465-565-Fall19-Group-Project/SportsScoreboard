@@ -19,12 +19,10 @@ import {
   CardImg
 } from "reactstrap";
 
-class Leaderboards extends Component {
+class Testing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchor: null,
-      basketballFlag: false,
       activeTab: "1",
       length: null,
       teams: [
@@ -41,13 +39,6 @@ class Leaderboards extends Component {
     this.toggle = this.toggle.bind(this);
   }
 
-  __onEvent(sport) {
-    if (sport === "basketball") {
-      this.setState({
-        basketballFlag: true
-      });
-    }
-  }
 
   toggle(tab) {
     if (this.state.activeTab !== this.state.tab) {
@@ -111,8 +102,8 @@ class Leaderboards extends Component {
     console.log(document.getElementById("tab1-anchor"));
     this.state.teams.forEach(function(element) {
       //create card container.
-      var column = document.createElement("col");
-      column.clasList = "col-2";
+      var column = document.createElement("div");
+      column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
       var card = document.createElement("div");
@@ -130,26 +121,23 @@ class Leaderboards extends Component {
       cardImage.classList = "card-img-top";
       cardImage.alt = "team logo";
       cardImage.src = element.team.logo;
+      cardImage.height = "100"
       //cardImage is a child of cardBody, so is cardTitle
       cardBody.appendChild(cardImage);
 
       //card title.
       var cardTitle = document.createElement("h6");
-      cardTitle.classList = "card-title";
+      cardTitle.classList = "card-title text-center";
       cardTitle.textContent = element.team.name;
       cardBody.appendChild(cardTitle);
     });
   }
-  test(element){
-    if(!element) return;
-   var test = document.createElement('div');
-   element.appendChild(test); 
-  }
   componentDidMount(){
-    this.loadTeams(document.getElementById("tab1-anchor"), "basketball", "nba");
-    this.forceUpdate();
+    this.loadTeams(document.getElementById("tab1-anchor"), "football", "nfl");
   }
+
   render() {
+    console.log("hello");
     return (
       <div>
         <Nav tabs>
@@ -177,7 +165,9 @@ class Leaderboards extends Component {
         <TabContent activeTab={this.state.activeTab}>
           <TabPane tabId="1">
             {this.state.activeTab == 1 ? (
-              <row id="tab1-anchor">test</row>
+
+              <div class="row" id="tab1-anchor" onLoad={this.componentDidMount()}>
+              </div>
             ) : null}
           </TabPane>
           <TabPane tabId="2">
@@ -188,4 +178,4 @@ class Leaderboards extends Component {
     );
   }
 }
-export default Leaderboards;
+export default Testing;
