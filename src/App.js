@@ -4,6 +4,7 @@ import Home from "./Home";
 import Teams from "./Teams";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import * as apis from "./scripts/apis";
+import TeamInfo from "./TeamInfo";
 
 function App() {
   return (
@@ -20,9 +21,12 @@ function App() {
         <Route path="/" component={Home} exact></Route>
 
         {/* These routes are in the teams class*/}
-        <Route path="/Teams/Football" component={Teams} exact></Route>
-        <Route path="/Teams/Basketball" component={Teams} exact></Route>
-        <Route path="/Teams/Hockey" component={Teams} exact></Route>
+        <Route path="/Teams/football" component={Teams} exact></Route>
+        <Route path="/Teams/basketball" component={Teams} exact></Route>
+        <Route path="/Teams/hockey" component={Teams} exact></Route>
+        <Route path="/Teams/football/:team" component={TeamInfo} exact></Route>
+        <Route path="/Teams/basketball/:team" component={TeamInfo} exact></Route>
+        <Route path="/Teams/hockey/:team" component={TeamInfo} exact></Route>
       </Switch>
     </Router>
   );
