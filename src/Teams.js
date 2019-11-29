@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import classnames from "classnames";
 import apis from "./scripts/apis";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import {
-  TabContent,
-  TabPane,
   Nav,
   NavItem,
   NavLink,
@@ -13,14 +10,6 @@ import {
   NavbarBrand,
   Navbar,
   Collapse,
-  Card,
-  Button,
-  CardTitle,
-  CardText,
-  Row,
-  Col,
-  Container,
-  CardImg
 } from "reactstrap";
 
 class Teams extends React.Component {
@@ -63,21 +52,27 @@ class Teams extends React.Component {
         ) +
         this.state.teams.shift() +
         console.log(this.state.teams) +
-        this.spawnCard(anchor)
+        this.spawnCard(anchor, sport, league)
     );
   }
 
-  spawnCard(anchor) {
+  spawnCard(anchor, sport, league) {
     //loop through all teams and create a card for each one!
     this.state.teams.forEach(function(element) {
       //create card container.
+
       var column = document.createElement("div");
       column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
+      var link =  document.createElement("a");
+      link.href="/Teams/" + sport + "/" + element.team.name + "-" + league;
+      link.style ="text-decoration: none; color:black;"
+      column.appendChild(link);
+
       var card = document.createElement("div");
       card.classList = "card";
-      column.appendChild(card);
+      link.appendChild(card);
 
       //create card body container
       var cardBody = document.createElement("div");
@@ -104,29 +99,31 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log(this.props.location);
-    if (this.props.location.pathname === "/Teams/Football"){
+    if (this.props.location.pathname === "/Teams/football"){
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
         "nfl"
       );
     }
-    else if(this.props.location.pathname === "/Teams/Basketball"){
+    else if(this.props.location.pathname === "/Teams/basketball"){
       this.loadTeams(
         document.getElementById("append-to-me"),
         "basketball",
         "nba"
       )
     }
-    else if(this.props.location.pathname === "/Teams/Soccer"){
+    else if(this.props.location.pathname === "/Teams/hockey"){
       this.loadTeams(
         document.getElementById("append-to-me"),
-        "basketball",
-        "wnba"
+        "hockey",
+        "nhl"
       )
     }
     else{
       this.loadTeams(document.getElementById("append-to-me"),"football","nfl")
+      this.loadTeams(document.getElementById("append-to-me"),"basketball","nba")
+      this.loadTeams(document.getElementById("append-to-me"),"hockey","nhl")
     }
   }
 
@@ -139,13 +136,13 @@ class Teams extends React.Component {
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink href="/Teams/Football"> Football </NavLink>
+                  <NavLink href="/Teams/football"> Football </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/Teams/Basketball"> Basketball </NavLink>
+                  <NavLink href="/Teams/basketball"> Basketball </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink href="/Teams/Soccer"> Soccer </NavLink>
+                  <NavLink href="/Teams/hockey"> Hockey</NavLink>
                 </NavItem>
               </Nav>
             </Collapse>

@@ -22,7 +22,7 @@ function App() {
         {/* These routes are in the teams class*/}
         <Route path="/Teams/Football" component={Teams} exact></Route>
         <Route path="/Teams/Basketball" component={Teams} exact></Route>
-        <Route path="/Teams/Soccer" component={Teams} exact></Route>
+        <Route path="/Teams/Hockey" component={Teams} exact></Route>
       </Switch>
     </Router>
   );
