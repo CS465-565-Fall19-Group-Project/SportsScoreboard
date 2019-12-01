@@ -18,6 +18,7 @@ function App() {
       <Switch>
         {/*<Route path="/Match-history/" component={MatchHistory} exact></Route>*/}
         <Route path="/Teams/" component={Teams} exact></Route>
+        {/*<Route path="/" render={props => <Home {...props} />}></Route>*/}
         <Route path="/" component={Home} exact></Route>
 
         {/* These routes are in the teams class*/}
