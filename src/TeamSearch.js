@@ -104,6 +104,10 @@ const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
   );
 };
 
+const map = function() {
+  const users = this.users_tweeting.sort();
+};
+
 const EVENTMAPPING = {
   basketball: {
     nba: "nba",
@@ -121,7 +125,7 @@ const EVENTMAPPING = {
   }
 };
 
-const TeamSearch = props => {
+const TeamSearch = ({ trackedTeams }) => {
   let initialSport = Object.keys(EVENTMAPPING)[0];
   let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
   const [sportValue, setSport] = useState(initialSport);
@@ -160,6 +164,7 @@ const TeamSearch = props => {
       onSubmit: async event => {
         event.preventDefault();
         const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
+        //trackedTeams.push(`${sportValue}!${leagueAbbrev}!${searchValue}`);
         const teams = await apis.get_teams(sportValue, leagueAbbrev);
         if (teams != null) {
           const searchedTeams = teams
@@ -176,10 +181,10 @@ const TeamSearch = props => {
         } else {
           setTeams([]);
         }
-        console.log(teamValues);
       }
     },
     teams: {
+      //trackedTeams: trackedTeams,
       getRows: () => {
         if (teamValues.length == 0) {
           return (
@@ -217,6 +222,7 @@ const TeamSearch = props => {
         }
       },
       getCards: () => {
+        console.log(this);
         if (teamValues.length == 0) {
           return (
             <Row
@@ -228,6 +234,10 @@ const TeamSearch = props => {
           );
         } else {
           return teamValues.map((tv, index) => {
+            let href = "";
+            if (tv.team.getLogos().length > 0) {
+              href = tv.team.getLogos()[0].href;
+            }
             return (
               <Card
                 key={index}
@@ -238,8 +248,9 @@ const TeamSearch = props => {
               >
                 <CardImg
                   top
-                  src={tv.team.getLogos()[0].href}
-                  alt="card-team-img"
+                  src={href}
+                  alt={`${tv.team.displayName} logo`}
+                  style={{ backgroundColor: tv.team.getColors()[0] }}
                 ></CardImg>
                 <CardTitle>{tv.team.displayName}</CardTitle>
               </Card>
