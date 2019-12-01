@@ -28,9 +28,6 @@ const NavBar = props => {
                 <NavLink href="/Teams/"> Teams </NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/Leaderboards/">Leaderboards</NavLink>
-              </NavItem>
-              <NavItem>
                 <NavLink href="/Match-History/"> Match History</NavLink>
               </NavItem>
             </Nav>

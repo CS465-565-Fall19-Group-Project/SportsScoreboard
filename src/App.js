@@ -4,6 +4,7 @@ import Home from "./Home";
 import Teams from "./Teams";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import * as apis from "./scripts/apis";
+import TeamInfo from "./TeamInfo";
 
 function App() {
   return (
@@ -15,15 +16,18 @@ function App() {
         we can seperate each page into its own javascript file for better organization.
     */}
       <Switch>
-        {/*
-    **These files are not yet implemented. get rid of the comment when they are**
-
-    <Route path="/Leaderboards/" component={Leaderboards} exact></Route>
-    <Route path="/Match-history/" component={MatchHistory} exact></Route>
-    */}
+        {/*<Route path="/Match-history/" component={MatchHistory} exact></Route>*/}
         <Route path="/Teams/" component={Teams} exact></Route>
         {/*<Route path="/" render={props => <Home {...props} />}></Route>*/}
         <Route path="/" component={Home} exact></Route>
+
+        {/* These routes are in the teams class*/}
+        <Route path="/Teams/football" component={Teams} exact></Route>
+        <Route path="/Teams/basketball" component={Teams} exact></Route>
+        <Route path="/Teams/hockey" component={Teams} exact></Route>
+        <Route path="/Teams/football/:team" component={TeamInfo} exact></Route>
+        <Route path="/Teams/basketball/:team" component={TeamInfo} exact></Route>
+        <Route path="/Teams/hockey/:team" component={TeamInfo} exact></Route>
       </Switch>
     </Router>
   );
