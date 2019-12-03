@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React, { Suspense } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import classnames from "classnames";
 import apis from "./scripts/apis";
-import Scoreboard from "./Scoreboard";
 import {
   Card,
   CardImg,
@@ -18,115 +17,9 @@ import {
   Col,
   Container
 } from "reactstrap";
+import { get } from "http";
 
-const TeamSearchBar = ({ fieldToFuncDictionary }) => {
-  return (
-    <Container>
-      <Form onSubmit={fieldToFuncDictionary["search"].onSubmit}>
-        <Row className="justify-content-md-center">
-          <Col sm="2">
-            <FormGroup id="sportSelect">
-              <Label for="sportSelect">Sport</Label>
-              <Input
-                type="select"
-                name="sport"
-                id="sportSelectInput"
-                onChange={fieldToFuncDictionary["sport"].onChange}
-              >
-                {fieldToFuncDictionary["sport"].getOptions()}
-              </Input>
-            </FormGroup>
-          </Col>
-          <Col sm="2">
-            <FormGroup id="leagueSelect">
-              <Label for="leagueSelect">League</Label>
-              <Input
-                type="select"
-                name="league"
-                id="leagueSelectInput"
-                onChange={fieldToFuncDictionary["league"].onChange}
-              >
-                {fieldToFuncDictionary["league"].getOptions()}
-              </Input>
-            </FormGroup>
-          </Col>
-          <Col sm="4">
-            <FormGroup id="searchInput">
-              <Label for="searchInput">Team Filter</Label>
-              <Input
-                type="search"
-                name="search"
-                id="teamSearchInput"
-                onChange={fieldToFuncDictionary["search"].onChange}
-                placeholder="Search teams..."
-              />
-            </FormGroup>
-          </Col>
-          <Col sm="1">
-            <FormGroup id="searchButton">
-              <Label for="searchButton">Search</Label>
-              <Button>
-                <i className="fa fa-search"></i>
-              </Button>
-            </FormGroup>
-          </Col>
-        </Row>
-      </Form>
-    </Container>
-  );
-};
-
-const TeamSearchTable = ({ fieldToFuncDictionary }) => {
-  return (
-    <Container>
-      <Row className="justify-content-md-center">
-        <Table striped>
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}>Track</th>
-              <th>Selected</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>{fieldToFuncDictionary["teams"].getRows()}</tbody>
-        </Table>
-      </Row>
-    </Container>
-  );
-};
-
-const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
-  return (
-    <Container>
-      <Row className="justify-content-md-center">
-        {fieldToFuncDictionary["teams"].getCards()}
-      </Row>
-    </Container>
-  );
-};
-
-const map = function() {
-  const users = this.users_tweeting.sort();
-};
-
-const EVENTMAPPING = {
-  basketball: {
-    nba: "nba",
-    wnba: "wnba",
-    ncaam: "mens-college-basketball",
-    ncaaw: "womens-college-basketball"
-  },
-  soccer: {
-    mls: "usa.1",
-    nwsl: "nwsl.1"
-  },
-  football: {
-    nfl: "nfl",
-    cfb: "college-football"
-  }
-};
-
-const TeamSearch = ({ trackedTeams }) => {
+/*const ScoreboardSearch = ({ trackedTeams }) => {
   let initialSport = Object.keys(EVENTMAPPING)[0];
   let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
   const [sportValue, setSport] = useState(initialSport);
@@ -266,11 +159,127 @@ const TeamSearch = ({ trackedTeams }) => {
     <Container>
       <TeamSearchBar fieldToFuncDictionary={data} />
       <TeamSearchGrid fieldToFuncDictionary={data} />
-      <Scoreboard
-        trackedTeams={["football!nfl!sea", "basketball!nba!por"]}
-      ></Scoreboard>
     </Container>
   );
+};*/
+
+class TeamScoreCard extends React.Component {
+  constructor(props) {
+    super(props);
+    //Initalize initial state - fill when compontent mounts (see componentDidMount())
+    this.state = {
+      teamData: {
+        team: this.props.teamString.split("!"),
+        games: null
+      }
+    };
+  }
+
+  findMostRecentGames(espnSchedule) {
+    let output = {
+      prev: null,
+      live: null,
+      next: null
+    };
+    const now = new Date().toISOString();
+    for (let i = 0; i < espnSchedule.events.length; i++) {
+      let game = espnSchedule.events[i];
+      if (game.date < now) {
+        output.prev = game;
+      } else {
+        output.next = game;
+        console.log("done");
+        return output;
+      }
+    }
+    console.log("done");
+
+    return output;
+  }
+
+  async getData(teamString) {
+    //Get data
+    const keys = teamString.split("!");
+    const schedule = await apis.get_schedule(...keys);
+    if (schedule != null) {
+      console.log("bind");
+      console.log(this);
+      return {
+        team: schedule.team,
+        games: this.findMostRecentGames(schedule)
+      };
+    } else {
+      console.log(keys);
+      return {
+        team: keys,
+        games: null
+      };
+    }
+  }
+
+  //Do async stuff here, which will repopulate data
+  async componentDidMount() {
+    console.log("Mount");
+    console.log(this);
+    const response = await this.getData(this.props.teamString);
+    this.setState({ teamData: response });
+    console.log("response");
+    console.log(response);
+  }
+
+  render() {
+    //Process data
+    let href = "";
+    let teamName = "";
+    let backgroundColor = "#000000";
+    let prevOrLiveScoreCard;
+    let nextScoreCard;
+    if (this.state.teamData.games == null) {
+      teamName = this.state.teamData.team.join(" ");
+    } else {
+      teamName = this.state.teamData.team.displayName;
+      href = this.state.teamData.team.getLogos()[0];
+      backgroundColor = this.state.teamData.team.getColors()[0];
+    }
+    console.log("returning");
+    return (
+      <Card key={`${teamName}Card`} style={{ margin: "10px" }}>
+        <Card
+          key={teamName}
+          style={{
+            height: "300px",
+            width: "300px",
+            margin: "10px",
+            textAlign: "center"
+          }}
+          onChange={() => {
+            console.log("CHanged");
+          }}
+        >
+          <CardImg
+            top
+            src={href}
+            alt={`${teamName} logo`}
+            style={{
+              height: "90%",
+              width: "90%",
+              backgroundColor: backgroundColor,
+              margin: "auto"
+            }}
+          ></CardImg>
+          <CardTitle>{teamName}</CardTitle>
+        </Card>
+        {/**Prev/Live*/}
+        {/**Next */}
+      </Card>
+    );
+  }
+}
+
+const Scoreboard = ({ trackedTeams }) => {
+  return trackedTeams.map(teamString => {
+    return <TeamScoreCard teamString={teamString}></TeamScoreCard>;
+  });
 };
 
-export default TeamSearch;
+export default Scoreboard;
