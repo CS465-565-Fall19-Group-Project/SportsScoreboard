@@ -6,6 +6,7 @@ import {
   Card,
   CardImg,
   CardTitle,
+  CardDeck,
   Table,
   Image,
   Input,
@@ -19,149 +20,61 @@ import {
 } from "reactstrap";
 import { get } from "http";
 
-/*const ScoreboardSearch = ({ trackedTeams }) => {
-  let initialSport = Object.keys(EVENTMAPPING)[0];
-  let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
-  const [sportValue, setSport] = useState(initialSport);
-  const [leagueValue, setLeague] = useState(initialLeague);
-  const [searchValue, setSearch] = useState("");
-  const [teamValues, setTeams] = useState([]);
+class ScoreCard extends React.Component {
+  constructor(props) {
+    super(props);
+    console.log("orosd");
+    console.log(props);
+  }
 
-  const data = {
-    sport: {
-      getOptions: event => {
-        return Object.keys(EVENTMAPPING).map(value => {
-          return <option key={value}>{value.toUpperCase()}</option>;
-        });
-      },
-      onChange: event => {
-        let choice = event.target.value.toLowerCase();
-        setSport(choice);
-        console.log(EVENTMAPPING[choice]);
-        setLeague(Object.keys(EVENTMAPPING[choice])[0]);
-      }
-    },
-    league: {
-      getOptions: event => {
-        return Object.keys(EVENTMAPPING[sportValue]).map(value => {
-          return <option key={value}>{value.toUpperCase()}</option>;
-        });
-      },
-      onChange: event => {
-        setLeague(event.target.value.toLowerCase());
-      }
-    },
-    search: {
-      onChange: event => {
-        setSearch(event.target.value);
-      },
-      onSubmit: async event => {
-        event.preventDefault();
-        const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
-        //trackedTeams.push(`${sportValue}!${leagueAbbrev}!${searchValue}`);
-        const teams = await apis.get_teams(sportValue, leagueAbbrev);
-        if (teams != null) {
-          const searchedTeams = teams
-            .filter(team => {
-              return team.is_match(searchValue);
-            })
-            .map(team => {
-              return {
-                team: team,
-                selected: false
-              };
-            });
-          setTeams(searchedTeams);
-        } else {
-          setTeams([]);
-        }
-      }
-    },
-    teams: {
-      //trackedTeams: trackedTeams,
-      getRows: () => {
-        if (teamValues.length == 0) {
-          return (
-            <tr>
-              <th scope="row" colSpan="3" style={{ textAlign: "center" }}>
-                No matching teams
-              </th>
-            </tr>
-          );
-        } else {
-          return teamValues.map((tv, index) => {
-            return (
-              <tr
-                key={tv.team.abbreviation}
-                onChange={() => {
-                  console.log("CHanged");
-                }}
-              >
-                <th style={{ textAlign: "center" }}>
-                  <Input
-                    id={`teamSelected${index}`}
-                    type="checkbox"
-                    checked={tv.selected}
-                    onChange={event => {
-                      tv.selected = !tv.selected;
-                      console.log(tv);
-                    }}
-                  />
-                </th>
-                <td>{tv.team.displayName}</td>
-                <td></td>
-              </tr>
-            );
-          });
-        }
-      },
-      getCards: () => {
-        console.log(this);
-        if (teamValues.length == 0) {
-          return (
-            <Row
-              className="justify-content-md-center"
-              style={{ backgroundColor: "lightgray" }}
-            >
-              No matching teams
-            </Row>
-          );
-        } else {
-          return teamValues.map((tv, index) => {
-            let href = "";
-            if (tv.team.getLogos().length > 0) {
-              href = tv.team.getLogos()[0].href;
-            }
-            return (
-              <Card
-                key={index}
-                style={{ width: "200px", margin: "10px", textAlign: "center" }}
-                onChange={() => {
-                  console.log("CHanged");
-                }}
-              >
-                <CardImg
-                  top
-                  src={href}
-                  alt={`${tv.team.displayName} logo`}
-                  style={{ backgroundColor: tv.team.getColors()[0] }}
-                ></CardImg>
-                <CardTitle>{tv.team.displayName}</CardTitle>
-              </Card>
-            );
-          });
-        }
-      }
-    }
-  };
-
-  return (
-    <Container>
-      <TeamSearchBar fieldToFuncDictionary={data} />
-      <TeamSearchGrid fieldToFuncDictionary={data} />
-    </Container>
-  );
-};*/
+  render() {
+    const team1 = this.props.competition.competitors[0];
+    const team2 = this.props.competition.competitors[1];
+    console.log("tttt");
+    console.log(team1.score != null);
+    const compDate = new Date(this.props.competition.date);
+    const display1 =
+      team1.score != null ? team1.score.value : compDate.toLocaleDateString();
+    const display2 =
+      team2.score != null ? team2.score.value : compDate.toLocaleTimeString();
+    return (
+      <Card
+        style={{
+          height: "300px",
+          width: "300px",
+          margin: "10px",
+          fontSize: "32px"
+        }}
+      >
+        <CardTitle style={{ textAlign: "center" }}>
+          {this.props.type} Game
+        </CardTitle>
+        <Row
+          className="justify-content-md-center d-flex align-items-center"
+          style={{ height: "45%", fontSize: "24px" }}
+        >
+          <CardImg
+            src={team1.team.logos[0].href}
+            alt={`${team1.team.abbreviation} logo`}
+            style={{ height: "80%", width: "auto" }}
+          ></CardImg>{" "}
+          {`${team1.team.abbreviation} ${display1}`}
+        </Row>
+        <Row
+          className="justify-content-md-center d-flex align-items-center"
+          style={{ height: "45%", fontSize: "24px" }}
+        >
+          <CardImg
+            src={team2.team.logos[0].href}
+            alt={`${team2.team.abbreviation} logo`}
+            style={{ height: "80%", width: "auto" }}
+          ></CardImg>{" "}
+          {`${team2.team.abbreviation} ${display2}`}
+        </Row>
+      </Card>
+    );
+  }
+}
 
 class TeamScoreCard extends React.Component {
   constructor(props) {
@@ -188,11 +101,9 @@ class TeamScoreCard extends React.Component {
         output.prev = game;
       } else {
         output.next = game;
-        console.log("done");
         return output;
       }
     }
-    console.log("done");
 
     return output;
   }
@@ -202,14 +113,11 @@ class TeamScoreCard extends React.Component {
     const keys = teamString.split("!");
     const schedule = await apis.get_schedule(...keys);
     if (schedule != null) {
-      console.log("bind");
-      console.log(this);
       return {
         team: schedule.team,
         games: this.findMostRecentGames(schedule)
       };
     } else {
-      console.log(keys);
       return {
         team: keys,
         games: null
@@ -219,12 +127,8 @@ class TeamScoreCard extends React.Component {
 
   //Do async stuff here, which will repopulate data
   async componentDidMount() {
-    console.log("Mount");
-    console.log(this);
     const response = await this.getData(this.props.teamString);
     this.setState({ teamData: response });
-    console.log("response");
-    console.log(response);
   }
 
   render() {
@@ -232,18 +136,57 @@ class TeamScoreCard extends React.Component {
     let href = "";
     let teamName = "";
     let backgroundColor = "#000000";
-    let prevOrLiveScoreCard;
-    let nextScoreCard;
+    let prevOrLiveScoreCard = (
+      <Card
+        style={{
+          height: "300px",
+          width: "300px",
+          margin: "10px"
+        }}
+      ></Card>
+    );
+    let nextScoreCard = (
+      <Card
+        style={{
+          height: "300px",
+          width: "300px",
+          margin: "10px"
+        }}
+      ></Card>
+    );
     if (this.state.teamData.games == null) {
       teamName = this.state.teamData.team.join(" ");
     } else {
       teamName = this.state.teamData.team.displayName;
       href = this.state.teamData.team.getLogos()[0];
       backgroundColor = this.state.teamData.team.getColors()[0];
+      if (this.state.teamData.games.prev != null) {
+        console.log("comp)");
+        console.log(this.state.teamData.games.prev.competitions[0]);
+        prevOrLiveScoreCard = (
+          <ScoreCard
+            competition={this.state.teamData.games.prev.competitions[0]}
+            type="Previous"
+          ></ScoreCard>
+        );
+      }
+      if (this.state.teamData.games.next != null) {
+        nextScoreCard = (
+          <ScoreCard
+            competition={this.state.teamData.games.next.competitions[0]}
+            type="Next"
+          ></ScoreCard>
+        );
+      }
     }
-    console.log("returning");
     return (
-      <Card key={`${teamName}Card`} style={{ margin: "10px" }}>
+      <CardDeck
+        key={`${teamName}Card`}
+        style={{
+          margin: "10px",
+          textAlign: "left"
+        }}
+      >
         <Card
           key={teamName}
           style={{
@@ -269,9 +212,9 @@ class TeamScoreCard extends React.Component {
           ></CardImg>
           <CardTitle>{teamName}</CardTitle>
         </Card>
-        {/**Prev/Live*/}
-        {/**Next */}
-      </Card>
+        {prevOrLiveScoreCard}
+        {nextScoreCard}
+      </CardDeck>
     );
   }
 }
