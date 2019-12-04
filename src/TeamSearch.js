@@ -105,28 +105,30 @@ const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
   );
 };
 
-const map = function() {
-  const users = this.users_tweeting.sort();
-};
-
 const EVENTMAPPING = {
+  baseball: {
+    mlb: "mlb"
+  },
   basketball: {
     nba: "nba",
     wnba: "wnba",
     ncaam: "mens-college-basketball",
     ncaaw: "womens-college-basketball"
   },
-  soccer: {
-    mls: "usa.1",
-    nwsl: "nwsl.1"
-  },
   football: {
     nfl: "nfl",
     cfb: "college-football"
+  },
+  hockey: {
+    nhl: "nhl"
+  },
+  soccer: {
+    mls: "usa.1",
+    nwsl: "usa.nwsl"
   }
 };
 
-const TeamSearch = ({ trackedTeams }) => {
+const TeamSearch = ({ teamTracker }) => {
   let initialSport = Object.keys(EVENTMAPPING)[0];
   let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
   const [sportValue, setSport] = useState(initialSport);
@@ -165,21 +167,18 @@ const TeamSearch = ({ trackedTeams }) => {
         console.log("Changing teams");
         event.preventDefault();
         const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
-        //trackedTeams.push(`${sportValue}!${leagueAbbrev}!${searchValue}`);
         const teams = await apis.get_teams(sportValue, leagueAbbrev);
         if (teams != null) {
-          console.log("selected)");
-          console.log(trackedTeams);
           const searchedTeams = teams
             .filter(team => {
               return team.is_match(searchValue);
             })
             .map(team => {
-              const trackerValue = `${sportValue}!${leagueValue}!${team.abbreviation.toLowerCase()}`;
+              const trackerValue = `${sportValue}!${leagueAbbrev}!${team.abbreviation.toLowerCase()}`;
               return {
                 team: team,
                 trackerValue: trackerValue,
-                selected: trackedTeams.includes(trackerValue)
+                selected: teamTracker.containsTeam(trackerValue)
               };
             });
           setTeams(searchedTeams);
@@ -260,8 +259,7 @@ const TeamSearch = ({ trackedTeams }) => {
                   onLoad={() => {
                     //Onload, make sure proper value set
                     const a = document.getElementById(`team!${slug}`);
-                    const index = trackedTeams.indexOf(tv.trackerValue);
-                    if (index >= 0) {
+                    if (teamTracker.containsTeam(tv.trackerValue)) {
                       a.style.backgroundColor = "#00ff00";
                     } else {
                       a.style.backgroundColor = "#ffffff";
@@ -269,12 +267,11 @@ const TeamSearch = ({ trackedTeams }) => {
                   }}
                   onClick={() => {
                     const a = document.getElementById(`team!${slug}`);
-                    const index = trackedTeams.indexOf(tv.trackerValue);
-                    if (index >= 0) {
-                      trackedTeams.splice(index, 1);
+                    if (teamTracker.containsTeam(tv.trackerValue)) {
+                      teamTracker.removeTeam(tv.trackerValue);
                       a.style.backgroundColor = "#ffffff";
                     } else {
-                      trackedTeams.push(tv.trackerValue);
+                      teamTracker.addTeam(tv.trackerValue);
                       a.style.backgroundColor = "#00ff00";
                     }
                   }}

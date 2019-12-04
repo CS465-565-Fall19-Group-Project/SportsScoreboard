@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import {
   Container,
@@ -18,10 +19,14 @@ import Scoreboard from "./Scoreboard";
 
 function Home() {
   const [trackedTeams, setTrackedTeams] = useState([]);
+  const [toggleSearch, setToggle] = useState(false);
 
   const teamTracker = {
     getTeams: () => {
       return trackedTeams;
+    },
+    containsTeam: teamString => {
+      return trackedTeams.includes(teamString);
     },
     addTeam: teamString => {
       if (!trackedTeams.includes(teamString)) {
@@ -38,15 +43,24 @@ function Home() {
     }
   };
 
-  const toggleVisible = bool => {
-    const search = document.getElementById("searchContainer");
-    const scores = document.getElementById("scoreboardContainer");
-    if (bool) {
-      search.style.display = "None";
-      scores.style.display = "";
+  const renderSearchOrScores = () => {
+    if (toggleSearch) {
+      return (
+        <Container
+          id="scoreboardContainer"
+          style={{
+            padding: "10px"
+          }}
+        >
+          <Scoreboard teamTracker={teamTracker}></Scoreboard>
+        </Container>
+      );
     } else {
-      search.style.display = "";
-      scores.style.display = "None";
+      return (
+        <Container id="searchContainer" style={{ padding: "10px" }}>
+          <TeamSearch teamTracker={teamTracker} />
+        </Container>
+      );
     }
   };
   return (
@@ -56,7 +70,7 @@ function Home() {
           <NavItem>
             <NavLink
               onClick={() => {
-                toggleVisible(false);
+                setToggle(false);
               }}
             >
               Find Teams
@@ -65,7 +79,7 @@ function Home() {
           <NavItem>
             <NavLink
               onClick={() => {
-                toggleVisible(true);
+                setToggle(true);
               }}
             >
               View Scoreboard
@@ -73,18 +87,7 @@ function Home() {
           </NavItem>
         </Nav>
       </div>
-      <Container id="searchContainer" style={{ padding: "10px" }}>
-        <TeamSearch trackedTeams={trackedTeams} />
-      </Container>
-      <Container
-        id="scoreboardContainer"
-        style={{
-          padding: "10px",
-          display: "None"
-        }}
-      >
-        <Scoreboard trackedTeams={trackedTeams}></Scoreboard>
-      </Container>
+      {renderSearchOrScores()}
     </div>
   );
 }

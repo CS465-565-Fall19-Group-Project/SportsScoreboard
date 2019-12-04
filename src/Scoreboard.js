@@ -111,6 +111,7 @@ class TeamScoreCard extends React.Component {
   async getData(teamString) {
     //Get data
     const keys = teamString.split("!");
+    console.log(keys);
     const schedule = await apis.get_schedule(...keys);
     if (schedule != null) {
       return {
@@ -219,8 +220,9 @@ class TeamScoreCard extends React.Component {
   }
 }
 
-const Scoreboard = ({ trackedTeams }) => {
-  return trackedTeams.map(teamString => {
+const Scoreboard = ({ teamTracker }) => {
+  console.log("Rendering Scoreboard");
+  return teamTracker.getTeams().map(teamString => {
     return <TeamScoreCard teamString={teamString}></TeamScoreCard>;
   });
 };
