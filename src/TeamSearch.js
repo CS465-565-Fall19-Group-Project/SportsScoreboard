@@ -240,21 +240,52 @@ const TeamSearch = ({ trackedTeams }) => {
               href = tv.team.getLogos()[0].href;
             }
             return (
-              <Card
-                key={index}
-                style={{ width: "200px", margin: "10px", textAlign: "center" }}
-                onChange={() => {
-                  console.log("CHanged");
+              <div
+                id={`score${index}`}
+                style={{
+                  padding: "5px",
+                  margin: "5px",
+                  backgroundColor: "#ffffff"
                 }}
+                selected="false"
               >
-                <CardImg
-                  top
-                  src={href}
-                  alt={`${tv.team.displayName} logo`}
-                  style={{ backgroundColor: tv.team.getColors()[0] }}
-                ></CardImg>
-                <CardTitle>{tv.team.displayName}</CardTitle>
-              </Card>
+                <Card
+                  key={index}
+                  style={{
+                    width: "200px",
+                    margin: "10px",
+                    textAlign: "center"
+                  }}
+                  onClick={() => {
+                    const a = document.getElementById(`score${index}`);
+                    const value = `${sportValue}!${leagueValue}!${tv.team.abbreviation.toLowerCase()}`;
+                    if (a.selected == "true") {
+                      console.log("true");
+                      a.style.backgroundColor = "#ffffff";
+                      a.selected = "false";
+                      const index = trackedTeams.indexOf(value);
+                      if (index >= 0) {
+                        trackedTeams.splice(index, 1);
+                      }
+                    } else {
+                      console.log("false");
+                      a.style.backgroundColor = "#00ff00";
+                      a.selected = "true";
+                      trackedTeams.push(value);
+                    }
+                    console.log("click");
+                    console.log(trackedTeams);
+                  }}
+                >
+                  <CardImg
+                    top
+                    src={href}
+                    alt={`${tv.team.displayName} logo`}
+                    style={{ backgroundColor: tv.team.getColors()[0] }}
+                  ></CardImg>
+                  <CardTitle>{tv.team.displayName}</CardTitle>
+                </Card>
+              </div>
             );
           });
         }
@@ -266,9 +297,7 @@ const TeamSearch = ({ trackedTeams }) => {
     <Container>
       <TeamSearchBar fieldToFuncDictionary={data} />
       <TeamSearchGrid fieldToFuncDictionary={data} />
-      <Scoreboard
-        trackedTeams={["football!nfl!sea", "basketball!nba!por"]}
-      ></Scoreboard>
+      <Scoreboard trackedTeams={trackedTeams}></Scoreboard>
     </Container>
   );
 };
