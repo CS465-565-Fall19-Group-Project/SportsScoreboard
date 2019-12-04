@@ -221,10 +221,21 @@ class TeamScoreCard extends React.Component {
 }
 
 const Scoreboard = ({ teamTracker }) => {
-  console.log("Rendering Scoreboard");
-  return teamTracker.getTeams().map(teamString => {
-    return <TeamScoreCard teamString={teamString}></TeamScoreCard>;
-  });
+  const trackedTeams = teamTracker.getTeams();
+  if (trackedTeams.length == 0) {
+    return (
+      <Row
+        className="justify-content-md-center"
+        style={{ backgroundColor: "lightgray" }}
+      >
+        No teams selected - use Find Teams tab to pick teams!
+      </Row>
+    );
+  } else {
+    return trackedTeams.map(teamString => {
+      return <TeamScoreCard teamString={teamString}></TeamScoreCard>;
+    });
+  }
 };
 
 export default Scoreboard;
