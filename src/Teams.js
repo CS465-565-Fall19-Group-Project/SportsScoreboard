@@ -65,9 +65,9 @@ class Teams extends React.Component {
       column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
-      var link = document.createElement("a");
-      link.href = "/Teams/" + sport + "/" + element.team.name + "-" + league;
-      link.style = "text-decoration: none; color:black;";
+      var link =  document.createElement("a");
+      link.href="/Teams/" + sport + "/" + element.team.name + "-" + league;
+      link.style ="text-decoration: none; color:black;"
       column.appendChild(link);
 
       var card = document.createElement("div");
@@ -85,7 +85,6 @@ class Teams extends React.Component {
       cardImage.classList = "card-img-top";
       cardImage.alt = "team logo";
       cardImage.src = element.team.logo;
-      //cardImage.height = "100";
       cardImage.width = "200px";
       //cardImage is a child of cardBody, so is cardTitle
       cardBody.appendChild(cardImage);
@@ -100,7 +99,7 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log(this.props.location);
-    if (this.props.location.pathname === "/Teams/football") {
+    if (this.props.location.pathname === "/Teams/football"){
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
