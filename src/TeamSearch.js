@@ -144,7 +144,6 @@ const TeamSearch = ({ trackedTeams }) => {
       onChange: event => {
         let choice = event.target.value.toLowerCase();
         setSport(choice);
-        console.log(EVENTMAPPING[choice]);
         setLeague(Object.keys(EVENTMAPPING[choice])[0]);
       }
     },
@@ -163,19 +162,24 @@ const TeamSearch = ({ trackedTeams }) => {
         setSearch(event.target.value);
       },
       onSubmit: async event => {
+        console.log("Changing teams");
         event.preventDefault();
         const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
         //trackedTeams.push(`${sportValue}!${leagueAbbrev}!${searchValue}`);
         const teams = await apis.get_teams(sportValue, leagueAbbrev);
         if (teams != null) {
+          console.log("selected)");
+          console.log(trackedTeams);
           const searchedTeams = teams
             .filter(team => {
               return team.is_match(searchValue);
             })
             .map(team => {
+              const trackerValue = `${sportValue}!${leagueValue}!${team.abbreviation.toLowerCase()}`;
               return {
                 team: team,
-                selected: false
+                trackerValue: trackerValue,
+                selected: trackedTeams.includes(trackerValue)
               };
             });
           setTeams(searchedTeams);
@@ -186,7 +190,7 @@ const TeamSearch = ({ trackedTeams }) => {
     },
     teams: {
       //trackedTeams: trackedTeams,
-      getRows: () => {
+      /*getRows: () => {
         if (teamValues.length == 0) {
           return (
             <tr>
@@ -221,9 +225,8 @@ const TeamSearch = ({ trackedTeams }) => {
             );
           });
         }
-      },
+      },*/
       getCards: () => {
-        console.log(this);
         if (teamValues.length == 0) {
           return (
             <Row
@@ -235,46 +238,45 @@ const TeamSearch = ({ trackedTeams }) => {
           );
         } else {
           return teamValues.map((tv, index) => {
+            const slug = tv.team.slug;
             let href = "";
             if (tv.team.getLogos().length > 0) {
               href = tv.team.getLogos()[0].href;
             }
             return (
               <div
-                id={`score${index}`}
+                id={`team!${slug}`}
                 style={{
                   padding: "5px",
-                  margin: "5px",
-                  backgroundColor: "#ffffff"
+                  margin: "5px"
                 }}
-                selected="false"
               >
                 <Card
-                  key={index}
                   style={{
                     width: "200px",
                     margin: "10px",
                     textAlign: "center"
                   }}
-                  onClick={() => {
-                    const a = document.getElementById(`score${index}`);
-                    const value = `${sportValue}!${leagueValue}!${tv.team.abbreviation.toLowerCase()}`;
-                    if (a.selected == "true") {
-                      console.log("true");
-                      a.style.backgroundColor = "#ffffff";
-                      a.selected = "false";
-                      const index = trackedTeams.indexOf(value);
-                      if (index >= 0) {
-                        trackedTeams.splice(index, 1);
-                      }
-                    } else {
-                      console.log("false");
+                  onLoad={() => {
+                    //Onload, make sure proper value set
+                    const a = document.getElementById(`team!${slug}`);
+                    const index = trackedTeams.indexOf(tv.trackerValue);
+                    if (index >= 0) {
                       a.style.backgroundColor = "#00ff00";
-                      a.selected = "true";
-                      trackedTeams.push(value);
+                    } else {
+                      a.style.backgroundColor = "#ffffff";
                     }
-                    console.log("click");
-                    console.log(trackedTeams);
+                  }}
+                  onClick={() => {
+                    const a = document.getElementById(`team!${slug}`);
+                    const index = trackedTeams.indexOf(tv.trackerValue);
+                    if (index >= 0) {
+                      trackedTeams.splice(index, 1);
+                      a.style.backgroundColor = "#ffffff";
+                    } else {
+                      trackedTeams.push(tv.trackerValue);
+                      a.style.backgroundColor = "#00ff00";
+                    }
                   }}
                 >
                   <CardImg
@@ -297,7 +299,6 @@ const TeamSearch = ({ trackedTeams }) => {
     <Container>
       <TeamSearchBar fieldToFuncDictionary={data} />
       <TeamSearchGrid fieldToFuncDictionary={data} />
-      <Scoreboard trackedTeams={trackedTeams}></Scoreboard>
     </Container>
   );
 };
