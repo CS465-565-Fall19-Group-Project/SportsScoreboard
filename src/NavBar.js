@@ -17,7 +17,6 @@ const NavBar = props => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <Router>
       <div>
         <Navbar color="dark" dark expand="md">
           <NavbarBrand href="/">Scoreboard</NavbarBrand>
@@ -34,7 +33,6 @@ const NavBar = props => {
           </Collapse>
         </Navbar>
       </div>
-    </Router>
   );
 };
 
