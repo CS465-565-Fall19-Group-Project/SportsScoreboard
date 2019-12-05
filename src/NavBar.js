@@ -24,7 +24,7 @@ const NavBar = props => {
           <Collapse isOpen={isOpen} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem>
-                <NavLink href="/Teams/"> Teams </NavLink>
+                <Link to={{pathname: "/Teams/", state:{team:"blazers", sport:"basketball"}}}> Teams </Link>
               </NavItem>
               <NavItem>
                 <NavLink href="/Match-History/"> Match History</NavLink>

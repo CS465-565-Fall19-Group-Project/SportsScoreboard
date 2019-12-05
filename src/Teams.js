@@ -109,6 +109,7 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log(this.props.location);
+    console.log(this.props.location.state);
     if (this.props.location.pathname === "/Teams/football") {
       this.loadTeams(
         document.getElementById("append-to-me"),
@@ -137,6 +138,9 @@ class Teams extends React.Component {
       this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
     }
   }
+  setBackground(){
+    document.body.style.backgroundColor = "white";
+  }
 
   render() {
     return (
@@ -158,7 +162,7 @@ class Teams extends React.Component {
               </Nav>
             </Collapse>
           </Navbar>
-          <div id="append-to-me" class="row"></div>
+          <div id="append-to-me" class="row">{this.setBackground()}</div>
         </div>
       </Router>
     );

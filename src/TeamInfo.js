@@ -45,6 +45,7 @@ class TeamInfo extends React.Component {
 
     this.loadTeam(statsAnchor, sport, league, team); //sport , league
     this.loadSchedule(scheduleAnchor, sport, league, id);
+    this.loadScore(sport, league);
   }
 
   loadTeam(anchor, sport, league, name) {
@@ -73,10 +74,17 @@ class TeamInfo extends React.Component {
     apis.get_schedule(sport, league, id).then(function(response) {
       response.events.forEach(function(element) {
         currentComponent.setState({
-          schedule: [...currentComponent.state.schedule, element]
+          schedule: [...currentComponent.state.schedule, element],
+          id: id
         });
       });
       currentComponent.spawnSchedule(anchor);
+    });
+  }
+
+  loadScore(sport, league) {
+    apis.get_scoreboard(sport, league).then(function(response) {
+      console.log(response);
     });
   }
 
@@ -98,19 +106,16 @@ class TeamInfo extends React.Component {
 
   spawnSchedule(anchor) {
     var counter = 0;
+    let id = this.state.id;
 
-    console.log(this.state.schedule);
     this.state.schedule.forEach(function(element) {
-      console.log(element.name);
-
       var temp = element.date;
       var date;
       var time;
       temp = temp.split("T");
       date = temp[0];
       time = temp[1];
-      time = time.replace(/Z/g,"").trim();
-      console.log(date);
+      time = time.replace(/Z/g, "").trim();
 
       var tr = document.createElement("tr");
       anchor.appendChild(tr);
@@ -131,6 +136,22 @@ class TeamInfo extends React.Component {
       var nameElement = document.createElement("td");
       nameElement.innerText = element.name;
       tr.appendChild(nameElement);
+
+      var winOrLossElement = document.createElement("td");
+      console.log(element.competitions[0]);
+      winOrLossElement.innerText = "Win";
+      /*if (element.competitions[0].attendance) {
+        element.competitions[0].competitors.forEach(function(element) {
+          if (element.id == id) {
+            if (element.winner) {
+              winOrLossElement.innerText = "Win";
+            } else {
+              winOrLossElement.innerText = "Loss";
+            }
+          }
+        });
+        tr.appendChild(winOrLossElement);
+      }*/
       counter++;
     });
   }
@@ -170,6 +191,7 @@ class TeamInfo extends React.Component {
               <th scope="col">Date</th>
               <th scope="col">Time</th>
               <th scope="col">Game</th>
+              <th scope="col">Win / Loss</th>
             </tr>
           </thead>
           <tbody id="schedule-anchor"></tbody>
