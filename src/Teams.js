@@ -95,7 +95,7 @@ class Teams extends React.Component {
       cardImage.classList = "card-img-top";
       cardImage.alt = "team logo";
       cardImage.src = element.team.logo;
-      cardImage.height = "200";
+      cardImage.height = "250";
       //cardImage is a child of cardBody, so is cardTitle
       cardBody.appendChild(cardImage);
 

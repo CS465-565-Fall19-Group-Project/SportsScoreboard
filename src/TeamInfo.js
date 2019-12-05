@@ -13,6 +13,9 @@ class TeamInfo extends React.Component {
       logo: "",
       stats: [],
 
+      win: "",
+      loss: "",
+
       id: "",
       schedule: []
     };
@@ -53,6 +56,10 @@ class TeamInfo extends React.Component {
     apis.get_teams(sport, league).then(function(response) {
       response.forEach(function(element) {
         if (element.name === name) {
+          var winLoss = element.record.items[0].summary;
+          winLoss = winLoss.split("-");
+          console.log(winLoss);
+
           currentComponent.setState({
             displayName: element.displayName,
             color: element.color,
@@ -61,7 +68,9 @@ class TeamInfo extends React.Component {
             stats: [
               ...currentComponent.state.stats,
               element.record.items[0].stats
-            ]
+            ],
+            win: winLoss[0],
+            loss: winLoss[1]
           });
         }
       });
@@ -138,20 +147,21 @@ class TeamInfo extends React.Component {
       tr.appendChild(nameElement);
 
       var winOrLossElement = document.createElement("td");
-      console.log(element.competitions[0]);
-      winOrLossElement.innerText = "Win";
-      /*if (element.competitions[0].attendance) {
+      winOrLossElement.innerText = "TBD";
+      if (element.competitions[0].attendance) {
         element.competitions[0].competitors.forEach(function(element) {
           if (element.id == id) {
             if (element.winner) {
               winOrLossElement.innerText = "Win";
+              winOrLossElement.style.color = "green";
             } else {
               winOrLossElement.innerText = "Loss";
+              winOrLossElement.style.color = "red";
             }
           }
         });
-        tr.appendChild(winOrLossElement);
-      }*/
+      }
+      tr.appendChild(winOrLossElement);
       counter++;
     });
   }
@@ -172,7 +182,6 @@ class TeamInfo extends React.Component {
         style={{ backgroundColor: "white" }}
         className="justify-content-center"
       >
-        {" "}
         {this.setBackground()}
         <Container id="team-intro">
           <h1 class="text-center">{this.state.displayName}</h1>
@@ -182,6 +191,15 @@ class TeamInfo extends React.Component {
             height="200"
             src={this.state.logo}
           ></img>
+          <div class="container text-center mb-5">
+            <h2 class="d-inline" style={{ color: "green" }}>
+              {this.state.win}
+            </h2>
+            <h2 class="d-inline">-</h2>
+            <h2 class="d-inline" style={{ color: "red" }}>
+              {this.state.loss}
+            </h2>
+          </div>
         </Container>
         <h3 class="text-center">Schedule</h3>
         <table class="table">
