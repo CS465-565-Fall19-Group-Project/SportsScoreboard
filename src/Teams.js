@@ -39,7 +39,7 @@ class Teams extends React.Component {
         return {
           team: {
             name: element.name,
-            logo: element.logos[0].href
+            logo: element.logos[0].href,
             id: element.id
           }
         };
@@ -103,20 +103,17 @@ class Teams extends React.Component {
 
   searchTeam() {
     console.log("test");
-    var input, filter, container, card, i, id
-    if(document.getElementById("search-bar")){
-
-    input = document.getElementById("search-bar");
-    filter = input.value.toUpperCase();
+    var input, filter, container, card, i, id;
+    if (document.getElementById("search-bar")) {
+      input = document.getElementById("search-bar");
+      filter = input.value.toUpperCase();
     }
-    if(document.getElementById("append-to-me")){
+    if (document.getElementById("append-to-me")) {
+      container = document.getElementById("append-to-me");
+      card = container.getElementsByTagName("div");
+      console.log(card);
 
-    container = document.getElementById("append-to-me");
-    card = container.getElementsByTagName("div");
-    console.log(card);
-
-    for(i = 0; i<card.length;i++){
-    }
+      for (i = 0; i < card.length; i++) {}
     }
   }
 
@@ -166,47 +163,45 @@ class Teams extends React.Component {
       this.mount();
     }
     return (
-      <Router>
-        <div>
-          <Navbar color="light" light expand="md">
-            <NavbarToggler onClick={this.toggle} />
-            <Collapse isOpen={this.state.isOpen} navbar>
-              <Nav className="mr-auto" navbar>
-                <NavItem>
-                  <NavLink tag={Link} to="/Teams/football">
-                    {" "}
-                    Football{" "}
-                  </NavLink>
-                </NavItem>
-               <NavItem>
+      <div>
+        <Navbar color="light" light expand="md">
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className="mr-auto" navbar>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/football">
+                  {" "}
+                  Football{" "}
+                </NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink tag={Link} to="/Teams/basketball">
                   {" "}
                   Basketball{" "}
                 </NavLink>
               </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} to="/Teams/hockey">
-                    {" "}
-                    Hockey
-                  </NavLink>
-                </NavItem>
-                  <input
-                    onKeyUp={this.searchTeam()}
-                    class="mr-sm-2 float-right"
-                    id="search-bar"
-                    type="text"
-                    name="search-bar"
-                    placeholder="Search Teams"
-                    aria-label="Search"
-                  />
-              </Nav>
-            </Collapse>
-          </Navbar>
-          <div id="append-to-me" class="row">
-            {this.setBackground()}
-          </div>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/hockey">
+                  {" "}
+                  Hockey
+                </NavLink>
+              </NavItem>
+              <input
+                onKeyUp={this.searchTeam()}
+                class="mr-sm-2 float-right"
+                id="search-bar"
+                type="text"
+                name="search-bar"
+                placeholder="Search Teams"
+                aria-label="Search"
+              />
+            </Nav>
+          </Collapse>
+        </Navbar>
+        <div id="append-to-me" class="row">
+          {this.setBackground()}
         </div>
-      </Router>
+      </div>
     );
   }
 }
