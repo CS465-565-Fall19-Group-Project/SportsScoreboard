@@ -59,9 +59,8 @@ class Teams extends React.Component {
       anchor.appendChild(column);
 
       var link = document.createElement("a");
-      link.href = "/Teams/" + sport + "/" + element.team.name + "-" + league;
-      link.style = "text-decoration: none; color:black;";
       link.classList = "nav-link";
+      link.href = "/Teams/" + sport + "/" + element.team.name + "-" + league;
       column.appendChild(link);
 
       var card = document.createElement("div");
@@ -118,25 +117,17 @@ class Teams extends React.Component {
         true
       );
     } else {
-      console.log("Bad");
-      this.loadTeams(
-        document.getElementById("append-to-me"),
-        "football",
-        "nfl"
-      );
-      this.loadTeams(
-        document.getElementById("append-to-me"),
-        "basketball",
-        "nba"
-      );
-      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
+      const anchor = document.getElementById("append-to-me");
+      anchor.innerHTML = "";
+      this.loadTeams(anchor, "football", "nfl");
+      this.loadTeams(anchor, "basketball", "nba");
+      this.loadTeams(anchor, "hockey", "nhl");
     }
   }
 
   render() {
     //Servers as listener for pathname change and re-mounts teams accordingly
     if (this.props.location.pathname != this.state.lastPath) {
-      console.log("here!");
       this.state.lastPath = this.props.location.pathname;
       this.mount();
     }
