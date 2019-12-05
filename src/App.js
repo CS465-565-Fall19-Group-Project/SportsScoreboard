@@ -50,9 +50,23 @@ function App() {
         ></Route>
 
         {/* These routes are in the teams class*/}
-        <Route path="/Teams/football" component={Teams} exact></Route>
-        <Route path="/Teams/basketball" component={Teams} exact></Route>
-        <Route path="/Teams/hockey" component={Teams} exact></Route>
+        <Route
+          path="/Teams/football"
+          render={props => <Teams location={{ pathname: "/Teams/football" }} />}
+          exact
+        ></Route>
+        <Route
+          path="/Teams/basketball"
+          render={props => (
+            <Teams location={{ pathname: "/Teams/basketball" }} />
+          )}
+          exact
+        ></Route>
+        <Route
+          path="/Teams/hockey"
+          render={props => <Teams location={{ pathname: "/Teams/hockey" }} />}
+          exact
+        ></Route>
         <Route path="/Teams/football/:team" component={TeamInfo} exact></Route>
         <Route
           path="/Teams/basketball/:team"
