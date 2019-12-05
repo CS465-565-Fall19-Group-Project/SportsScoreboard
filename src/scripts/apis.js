@@ -127,6 +127,6 @@ const apis = {
   get_teams
 };
 
-module.exports = apis;
+//module.exports = apis;
 
 export default apis;
