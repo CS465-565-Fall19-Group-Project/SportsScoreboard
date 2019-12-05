@@ -17,22 +17,30 @@ const NavBar = props => {
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-      <div>
-        <Navbar color="dark" dark expand="md">
-          <NavbarBrand href="/">Scoreboard</NavbarBrand>
-          <NavbarToggler onClick={toggle} />
-          <Collapse isOpen={isOpen} navbar>
-            <Nav className="mr-auto" navbar>
-              <NavItem>
-                <Link className="nav-link" to={{pathname: "/Teams/", state:{team:"blazers", sport:"basketball"}}}> Teams </Link>
-              </NavItem>
-              <NavItem>
-                <NavLink href="/Match-History/"> Match History</NavLink>
-              </NavItem>
-            </Nav>
-          </Collapse>
-        </Navbar>
-      </div>
+    <div>
+      <Navbar color="dark" dark expand="md">
+        <NavbarBrand tag={Link} to="/">
+          Scoreboard
+        </NavbarBrand>
+        <NavbarToggler onClick={toggle} />
+        <Collapse isOpen={isOpen} navbar>
+          <Nav className="mr-auto" navbar>
+            <NavItem>
+              <NavLink tag={Link} to="/Teams/">
+                {" "}
+                Teams{" "}
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/Match-History/">
+                {" "}
+                Match History
+              </NavLink>
+            </NavItem>
+          </Nav>
+        </Collapse>
+      </Navbar>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import apis from "./scripts/apis";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Nav,
   NavItem,
@@ -17,6 +17,7 @@ class Teams extends React.Component {
     super(props);
     this.state = {
       isOpen: false,
+      lastPath: this.props.location.pathname,
       teams: [
         {
           team: {
@@ -32,34 +33,27 @@ class Teams extends React.Component {
   toggle() {
     this.setState({ isOpen: !this.state.isOpen });
   }
-  loadTeams(anchor, sport, league) {
-    apis.get_teams(sport, league).then(
-      response =>
-        response.forEach(
-          element =>
-            this.setState(prevState => ({
-              teams: [
-                ...this.state.teams,
-                {
-                  team: {
-                    name: element.name,
-                    logo: element.logos[0].href,
-                    id: element.id
-                  }
-                }
-              ]
-            }))
-          //for some reason, in this set state it is keeping the very first index as null.
-          //However by doing .shift() it simply removes the first element so problem solved.
-        ) +
-        this.state.teams.shift() +
-        this.spawnCard(anchor, sport, league)
-    );
+  loadTeams(anchor, sport, league, overwrite) {
+    apis.get_teams(sport, league).then(response => {
+      const teams = response.map(element => {
+        return {
+          team: {
+            name: element.name,
+            logo: element.logos[0].href
+            id: element.id
+          }
+        };
+      });
+      this.spawnCards(anchor, sport, league, teams, overwrite);
+    });
   }
 
-  spawnCard(anchor, sport, league) {
+  spawnCards(anchor, sport, league, teams, overwrite) {
+    if (overwrite) {
+      anchor.innerHTML = "";
+    }
     //loop through all teams and create a card for each one!
-    this.state.teams.forEach(function(element) {
+    teams.forEach(function(element) {
       //create card container.
 
       var column = document.createElement("div");
@@ -127,32 +121,37 @@ class Teams extends React.Component {
   }
 
   componentDidMount() {
+    this.mount();
+  }
+
+  mount() {
     if (this.props.location.pathname === "/Teams/football") {
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
-        "nfl"
+        "nfl",
+        true
       );
     } else if (this.props.location.pathname === "/Teams/basketball") {
       this.loadTeams(
         document.getElementById("append-to-me"),
         "basketball",
-        "nba"
+        "nba",
+        true
       );
     } else if (this.props.location.pathname === "/Teams/hockey") {
-      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
+      this.loadTeams(
+        document.getElementById("append-to-me"),
+        "hockey",
+        "nhl",
+        true
+      );
     } else {
-      this.loadTeams(
-        document.getElementById("append-to-me"),
-        "football",
-        "nfl"
-      );
-      this.loadTeams(
-        document.getElementById("append-to-me"),
-        "basketball",
-        "nba"
-      );
-      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
+      const anchor = document.getElementById("append-to-me");
+      anchor.innerHTML = "";
+      this.loadTeams(anchor, "football", "nfl");
+      this.loadTeams(anchor, "basketball", "nba");
+      this.loadTeams(anchor, "hockey", "nhl");
     }
   }
 
@@ -161,6 +160,11 @@ class Teams extends React.Component {
   }
 
   render() {
+    //Servers as listener for pathname change and re-mounts teams accordingly
+    if (this.props.location.pathname != this.state.lastPath) {
+      this.state.lastPath = this.props.location.pathname;
+      this.mount();
+    }
     return (
       <Router>
         <div>
@@ -169,13 +173,22 @@ class Teams extends React.Component {
             <Collapse isOpen={this.state.isOpen} navbar>
               <Nav className="mr-auto" navbar>
                 <NavItem>
-                  <NavLink href="/Teams/football"> Football </NavLink>
+                  <NavLink tag={Link} to="/Teams/football">
+                    {" "}
+                    Football{" "}
+                  </NavLink>
                 </NavItem>
+               <NavItem>
+                <NavLink tag={Link} to="/Teams/basketball">
+                  {" "}
+                  Basketball{" "}
+                </NavLink>
+              </NavItem>
                 <NavItem>
-                  <NavLink href="/Teams/basketball"> Basketball </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/Teams/hockey"> Hockey</NavLink>
+                  <NavLink tag={Link} to="/Teams/hockey">
+                    {" "}
+                    Hockey
+                  </NavLink>
                 </NavItem>
                   <input
                     onKeyUp={this.searchTeam()}
