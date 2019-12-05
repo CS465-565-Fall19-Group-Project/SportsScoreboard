@@ -22,7 +22,7 @@ class Teams extends React.Component {
           team: {
             name: null,
             logo: null,
-            id: null,
+            id: null
           }
         }
       ]
@@ -44,7 +44,7 @@ class Teams extends React.Component {
                   team: {
                     name: element.name,
                     logo: element.logos[0].href,
-                    id: element.id,
+                    id: element.id
                   }
                 }
               ]
@@ -53,7 +53,6 @@ class Teams extends React.Component {
           //However by doing .shift() it simply removes the first element so problem solved.
         ) +
         this.state.teams.shift() +
-        console.log(this.state.teams) +
         this.spawnCard(anchor, sport, league)
     );
   }
@@ -64,7 +63,8 @@ class Teams extends React.Component {
       //create card container.
 
       var column = document.createElement("div");
-      column.classList = "col-2 pl-1 mt-3";
+      column.classList = "team col-2 pl-1 mt-3";
+      column.id = element.team.name;
       anchor.appendChild(column);
 
       var link = document.createElement("a");
@@ -107,9 +107,26 @@ class Teams extends React.Component {
     });
   }
 
+  searchTeam() {
+    console.log("test");
+    var input, filter, container, card, i, id
+    if(document.getElementById("search-bar")){
+
+    input = document.getElementById("search-bar");
+    filter = input.value.toUpperCase();
+    }
+    if(document.getElementById("append-to-me")){
+
+    container = document.getElementById("append-to-me");
+    card = container.getElementsByTagName("div");
+    console.log(card);
+
+    for(i = 0; i<card.length;i++){
+    }
+    }
+  }
+
   componentDidMount() {
-    console.log(this.props.location);
-    console.log(this.props.location.state);
     if (this.props.location.pathname === "/Teams/football") {
       this.loadTeams(
         document.getElementById("append-to-me"),
@@ -138,7 +155,8 @@ class Teams extends React.Component {
       this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
     }
   }
-  setBackground(){
+
+  setBackground() {
     document.body.style.backgroundColor = "white";
   }
 
@@ -159,10 +177,21 @@ class Teams extends React.Component {
                 <NavItem>
                   <NavLink href="/Teams/hockey"> Hockey</NavLink>
                 </NavItem>
+                  <input
+                    onKeyUp={this.searchTeam()}
+                    class="mr-sm-2 float-right"
+                    id="search-bar"
+                    type="text"
+                    name="search-bar"
+                    placeholder="Search Teams"
+                    aria-label="Search"
+                  />
               </Nav>
             </Collapse>
           </Navbar>
-          <div id="append-to-me" class="row">{this.setBackground()}</div>
+          <div id="append-to-me" class="row">
+            {this.setBackground()}
+          </div>
         </div>
       </Router>
     );
