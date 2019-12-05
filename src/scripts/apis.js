@@ -121,8 +121,12 @@ const data = get_schedule("basketball", "nba", "por").then(output => {
   console.log(output.events[0]);
 });*/
 
-module.exports = {
+const apis = {
   get_scoreboard,
   get_schedule,
   get_teams
 };
+
+//module.exports = apis;
+
+export default apis;
