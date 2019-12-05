@@ -17,31 +17,10 @@ import {
 import TeamSearch from "./TeamSearch";
 import Scoreboard from "./Scoreboard";
 
-function Home() {
-  const [trackedTeams, setTrackedTeams] = useState([]);
+function Home({ teamTracker }) {
   const [toggleSearch, setToggle] = useState(false);
-
-  const teamTracker = {
-    getTeams: () => {
-      return trackedTeams;
-    },
-    containsTeam: teamString => {
-      return trackedTeams.includes(teamString);
-    },
-    addTeam: teamString => {
-      if (!trackedTeams.includes(teamString)) {
-        trackedTeams.push(teamString);
-        setTrackedTeams(trackedTeams);
-      }
-    },
-    removeTeam: teamString => {
-      const index = trackedTeams.indexOf(teamString);
-      if (index >= 0) {
-        trackedTeams.splice(index, 1);
-        setTrackedTeams(trackedTeams);
-      }
-    }
-  };
+  console.log("TeamS");
+  console.log(teamTracker.getTeams());
 
   const renderSearchOrScores = () => {
     if (toggleSearch) {

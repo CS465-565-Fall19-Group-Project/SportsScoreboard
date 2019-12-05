@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import apis from "./scripts/apis";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import {
   Nav,
   NavItem,
@@ -65,9 +65,9 @@ class Teams extends React.Component {
       column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
-      var link =  document.createElement("a");
-      link.href="/Teams/" + sport + "/" + element.team.name + "-" + league;
-      link.style ="text-decoration: none; color:black;"
+      var link = document.createElement("a");
+      link.href = "/Teams/" + sport + "/" + element.team.name + "-" + league;
+      link.style = "text-decoration: none; color:black;";
       column.appendChild(link);
 
       var card = document.createElement("div");
@@ -99,7 +99,7 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log(this.props.location);
-    if (this.props.location.pathname === "/Teams/football"){
+    if (this.props.location.pathname === "/Teams/football") {
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
@@ -130,31 +130,38 @@ class Teams extends React.Component {
 
   render() {
     return (
-      <Router>
-        <div>
-          <Navbar color="light" light expand="md">
-            <NavbarToggler onClick={this.toggle} />
-            <Collapse isOpen={this.state.isOpen} navbar>
-              <Nav className="mr-auto" navbar>
-                <NavItem>
-                  <NavLink href="/Teams/football"> Football </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/Teams/basketball"> Basketball </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/Teams/hockey"> Hockey</NavLink>
-                </NavItem>
-              </Nav>
-            </Collapse>
-          </Navbar>
-          <div
-            id="append-to-me"
-            class="row"
-            style={{ padding: "10px", margin: "0px" }}
-          ></div>
-        </div>
-      </Router>
+      <div>
+        <Navbar color="light" light expand="md">
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className="mr-auto" navbar>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/football">
+                  {" "}
+                  Football{" "}
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/basketball">
+                  {" "}
+                  Basketball{" "}
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/hockey">
+                  {" "}
+                  Hockey
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
+        <div
+          id="append-to-me"
+          class="row"
+          style={{ padding: "10px", margin: "0px" }}
+        ></div>
+      </div>
     );
   }
 }
