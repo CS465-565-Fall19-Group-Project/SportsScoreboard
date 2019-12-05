@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import apis from "./scripts/apis";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Nav,
   NavItem,
@@ -9,7 +9,7 @@ import {
   NavbarToggler,
   NavbarBrand,
   Navbar,
-  Collapse,
+  Collapse
 } from "reactstrap";
 
 class Teams extends React.Component {
@@ -17,6 +17,7 @@ class Teams extends React.Component {
     super(props);
     this.state = {
       isOpen: false,
+      lastPath: this.props.location.pathname,
       teams: [
         {
           team: {
@@ -31,43 +32,36 @@ class Teams extends React.Component {
   toggle() {
     this.setState({ isOpen: !this.state.isOpen });
   }
-  loadTeams(anchor, sport, league) {
-    apis.get_teams(sport, league).then(
-      response =>
-        response.forEach(
-          element =>
-            this.setState(prevState => ({
-              teams: [
-                ...this.state.teams,
-                {
-                  team: {
-                    name: element.name,
-                    logo: element.logos[0].href
-                  }
-                }
-              ]
-            }))
-          //for some reason, in this set state it is keeping the very first index as null.
-          //However by doing .shift() it simply removes the first element so problem solved.
-        ) +
-        this.state.teams.shift() +
-        console.log(this.state.teams) +
-        this.spawnCard(anchor, sport, league)
-    );
+  loadTeams(anchor, sport, league, overwrite) {
+    apis.get_teams(sport, league).then(response => {
+      const teams = response.map(element => {
+        return {
+          team: {
+            name: element.name,
+            logo: element.logos[0].href
+          }
+        };
+      });
+      this.spawnCards(anchor, sport, league, teams, overwrite);
+    });
   }
 
-  spawnCard(anchor, sport, league) {
+  spawnCards(anchor, sport, league, teams, overwrite) {
+    if (overwrite) {
+      anchor.innerHTML = "";
+    }
     //loop through all teams and create a card for each one!
-    this.state.teams.forEach(function(element) {
+    teams.forEach(function(element) {
       //create card container.
 
       var column = document.createElement("div");
       column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
-      var link =  document.createElement("a");
-      link.href="/Teams/" + sport + "/" + element.team.name + "-" + league;
-      link.style ="text-decoration: none; color:black;"
+      var link = document.createElement("a");
+      link.href = "/Teams/" + sport + "/" + element.team.name + "-" + league;
+      link.style = "text-decoration: none; color:black;";
+      link.classList = "nav-link";
       column.appendChild(link);
 
       var card = document.createElement("div");
@@ -85,7 +79,7 @@ class Teams extends React.Component {
       cardImage.classList = "card-img-top";
       cardImage.alt = "team logo";
       cardImage.src = element.team.logo;
-      cardImage.height = "100";
+      cardImage.width = "200px";
       //cardImage is a child of cardBody, so is cardTitle
       cardBody.appendChild(cardImage);
 
@@ -98,58 +92,87 @@ class Teams extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.location);
-    if (this.props.location.pathname === "/Teams/football"){
+    this.mount();
+  }
+
+  mount() {
+    if (this.props.location.pathname === "/Teams/football") {
+      this.loadTeams(
+        document.getElementById("append-to-me"),
+        "football",
+        "nfl",
+        true
+      );
+    } else if (this.props.location.pathname === "/Teams/basketball") {
+      this.loadTeams(
+        document.getElementById("append-to-me"),
+        "basketball",
+        "nba",
+        true
+      );
+    } else if (this.props.location.pathname === "/Teams/hockey") {
+      this.loadTeams(
+        document.getElementById("append-to-me"),
+        "hockey",
+        "nhl",
+        true
+      );
+    } else {
+      console.log("Bad");
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
         "nfl"
       );
-    }
-    else if(this.props.location.pathname === "/Teams/basketball"){
       this.loadTeams(
         document.getElementById("append-to-me"),
         "basketball",
         "nba"
-      )
-    }
-    else if(this.props.location.pathname === "/Teams/hockey"){
-      this.loadTeams(
-        document.getElementById("append-to-me"),
-        "hockey",
-        "nhl"
-      )
-    }
-    else{
-      this.loadTeams(document.getElementById("append-to-me"),"football","nfl")
-      this.loadTeams(document.getElementById("append-to-me"),"basketball","nba")
-      this.loadTeams(document.getElementById("append-to-me"),"hockey","nhl")
+      );
+      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
     }
   }
 
   render() {
+    //Servers as listener for pathname change and re-mounts teams accordingly
+    if (this.props.location.pathname != this.state.lastPath) {
+      console.log("here!");
+      this.state.lastPath = this.props.location.pathname;
+      this.mount();
+    }
     return (
-      <Router>
-        <div>
-          <Navbar color="light" light expand="md">
-            <NavbarToggler onClick={this.toggle} />
-            <Collapse isOpen={this.state.isOpen} navbar>
-              <Nav className="mr-auto" navbar>
-                <NavItem>
-                  <NavLink href="/Teams/football"> Football </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/Teams/basketball"> Basketball </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink href="/Teams/hockey"> Hockey</NavLink>
-                </NavItem>
-              </Nav>
-            </Collapse>
-          </Navbar>
-          <div id="append-to-me" class="row"></div>
-        </div>
-      </Router>
+      <div>
+        <Navbar color="light" light expand="md">
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            <Nav className="mr-auto" navbar>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/football">
+                  {" "}
+                  Football{" "}
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/basketball">
+                  {" "}
+                  Basketball{" "}
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/Teams/hockey">
+                  {" "}
+                  Hockey
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Collapse>
+        </Navbar>
+        <div
+          id="append-to-me"
+          class="row"
+          style={{ padding: "10px", margin: "0px" }}
+        ></div>
+      </div>
     );
   }
 }
