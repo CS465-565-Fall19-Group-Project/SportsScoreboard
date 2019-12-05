@@ -9,7 +9,7 @@ import {
   NavbarToggler,
   NavbarBrand,
   Navbar,
-  Collapse,
+  Collapse
 } from "reactstrap";
 
 class Teams extends React.Component {
@@ -21,7 +21,8 @@ class Teams extends React.Component {
         {
           team: {
             name: null,
-            logo: null
+            logo: null,
+            id: null,
           }
         }
       ]
@@ -42,7 +43,8 @@ class Teams extends React.Component {
                 {
                   team: {
                     name: element.name,
-                    logo: element.logos[0].href
+                    logo: element.logos[0].href,
+                    id: element.id,
                   }
                 }
               ]
@@ -65,9 +67,17 @@ class Teams extends React.Component {
       column.classList = "col-2 pl-1 mt-3";
       anchor.appendChild(column);
 
-      var link =  document.createElement("a");
-      link.href="/Teams/" + sport + "/" + element.team.name + "-" + league;
-      link.style ="text-decoration: none; color:black;"
+      var link = document.createElement("a");
+      link.href =
+        "/Teams/" +
+        sport +
+        "/" +
+        element.team.name +
+        "-" +
+        league +
+        "-" +
+        element.team.id;
+      link.style = "text-decoration: none; color:black;";
       column.appendChild(link);
 
       var card = document.createElement("div");
@@ -85,7 +95,7 @@ class Teams extends React.Component {
       cardImage.classList = "card-img-top";
       cardImage.alt = "team logo";
       cardImage.src = element.team.logo;
-      cardImage.height = "100";
+      cardImage.height = "200";
       //cardImage is a child of cardBody, so is cardTitle
       cardBody.appendChild(cardImage);
 
@@ -99,31 +109,32 @@ class Teams extends React.Component {
 
   componentDidMount() {
     console.log(this.props.location);
-    if (this.props.location.pathname === "/Teams/football"){
+    if (this.props.location.pathname === "/Teams/football") {
       this.loadTeams(
         document.getElementById("append-to-me"),
         "football",
         "nfl"
       );
-    }
-    else if(this.props.location.pathname === "/Teams/basketball"){
+    } else if (this.props.location.pathname === "/Teams/basketball") {
       this.loadTeams(
         document.getElementById("append-to-me"),
         "basketball",
         "nba"
-      )
-    }
-    else if(this.props.location.pathname === "/Teams/hockey"){
+      );
+    } else if (this.props.location.pathname === "/Teams/hockey") {
+      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
+    } else {
       this.loadTeams(
         document.getElementById("append-to-me"),
-        "hockey",
-        "nhl"
-      )
-    }
-    else{
-      this.loadTeams(document.getElementById("append-to-me"),"football","nfl")
-      this.loadTeams(document.getElementById("append-to-me"),"basketball","nba")
-      this.loadTeams(document.getElementById("append-to-me"),"hockey","nhl")
+        "football",
+        "nfl"
+      );
+      this.loadTeams(
+        document.getElementById("append-to-me"),
+        "basketball",
+        "nba"
+      );
+      this.loadTeams(document.getElementById("append-to-me"), "hockey", "nhl");
     }
   }
 
