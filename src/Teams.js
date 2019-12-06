@@ -7,7 +7,6 @@ import {
   NavItem,
   NavLink,
   NavbarToggler,
-  NavbarBrand,
   Navbar,
   Collapse
 } from "reactstrap";

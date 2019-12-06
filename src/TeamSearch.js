@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import classnames from "classnames";
 import apis from "./scripts/apis";
-import Scoreboard from "./Scoreboard";
 import {
   Card,
   CardImg,
   CardTitle,
-  Table,
-  Image,
   Input,
   Button,
   Form,

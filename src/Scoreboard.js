@@ -1,24 +1,7 @@
 import React, { Suspense } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import classnames from "classnames";
 import apis from "./scripts/apis";
-import {
-  Card,
-  CardImg,
-  CardTitle,
-  CardDeck,
-  Table,
-  Image,
-  Input,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Row,
-  Col,
-  Container
-} from "reactstrap";
-import { get } from "http";
+import { Card, CardImg, CardTitle, CardDeck, Row } from "reactstrap";
 
 class ScoreCard extends React.Component {
   constructor(props) {

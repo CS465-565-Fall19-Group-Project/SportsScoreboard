@@ -3,7 +3,6 @@ import NavBar from "./NavBar";
 import Home from "./Home";
 import Teams from "./Teams";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import * as apis from "./scripts/apis";
 import TeamInfo from "./TeamInfo";
 
 function App() {

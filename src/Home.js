@@ -1,26 +1,11 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import {
-  Container,
-  Nav,
-  NavItem,
-  NavLink,
-  Row,
-  Col,
-  Form,
-  InputGroup,
-  Input,
-  InputGroupAddon,
-  Button
-} from "reactstrap";
+import { Container, Nav, NavItem, NavLink } from "reactstrap";
 import TeamSearch from "./TeamSearch";
 import Scoreboard from "./Scoreboard";
 
 function Home({ teamTracker }) {
   const [toggleSearch, setToggle] = useState(false);
-  console.log("TeamS");
-  console.log(teamTracker.getTeams());
 
   const renderSearchOrScores = () => {
     if (toggleSearch) {

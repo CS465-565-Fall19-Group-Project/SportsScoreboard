@@ -1,8 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import apis from "./scripts/apis";
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, ListGroup, ListGroupItem, Row, Col } from "reactstrap";
+import { Container } from "reactstrap";
 
 class TeamInfo extends React.Component {
   constructor(props) {
