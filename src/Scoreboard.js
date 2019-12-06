@@ -1,13 +1,9 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import apis from "./scripts/apis";
 import { Card, CardImg, CardTitle, CardDeck, Row } from "reactstrap";
 
 class ScoreCard extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const team1 = this.props.competition.competitors[0];
     const team2 = this.props.competition.competitors[1];
@@ -195,7 +191,7 @@ class TeamScoreCard extends React.Component {
 
 const Scoreboard = ({ teamTracker }) => {
   const trackedTeams = teamTracker.getTeams();
-  if (trackedTeams.length == 0) {
+  if (trackedTeams.length === 0) {
     return (
       <Row
         className="justify-content-md-center"

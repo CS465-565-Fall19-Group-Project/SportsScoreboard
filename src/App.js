@@ -39,9 +39,7 @@ function App() {
         we can seperate each page into its own javascript file for better organization.
     */}
       <Switch>
-        {/*<Route path="/Match-history/" component={MatchHistory} exact></Route>*/}
         <Route path="/Teams/" component={Teams} exact></Route>
-        {/*<Route path="/" render={props => <Home {...props} />}></Route>*/}
         <Route
           path="/"
           render={props => <Home teamTracker={teamTracker} />}
@@ -73,6 +71,12 @@ function App() {
           exact
         ></Route>
         <Route path="/Teams/hockey/:team" component={TeamInfo} exact></Route>
+        {/* Catch all - send back to Home*/}
+        <Route
+          path="*"
+          render={props => <Home teamTracker={teamTracker} />}
+          exact
+        ></Route>
       </Switch>
     </Router>
   );

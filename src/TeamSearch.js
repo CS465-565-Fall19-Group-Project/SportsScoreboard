@@ -195,7 +195,7 @@ const TeamSearch = ({ teamTracker }) => {
     },
     teams: {
       getCards: () => {
-        if (teamValues.length == 0) {
+        if (teamValues.length === 0) {
           return (
             <Row
               className="justify-content-md-center"
