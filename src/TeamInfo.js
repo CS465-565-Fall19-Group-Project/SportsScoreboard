@@ -176,6 +176,10 @@ class TeamInfo extends React.Component {
     this.parseUrl(statsAnchor, scheduleAnchor);
   }
 
+  componentWillUnmount() {
+    document.body.style.backgroundColor = "white";
+  }
+
   render() {
     return (
       <Container

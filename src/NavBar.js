@@ -31,12 +31,6 @@ const NavBar = props => {
                 Teams{" "}
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/Match-History/">
-                {" "}
-                Match History
-              </NavLink>
-            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>

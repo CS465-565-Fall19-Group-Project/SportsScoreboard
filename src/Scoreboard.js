@@ -23,15 +23,11 @@ import { get } from "http";
 class ScoreCard extends React.Component {
   constructor(props) {
     super(props);
-    console.log("orosd");
-    console.log(props);
   }
 
   render() {
     const team1 = this.props.competition.competitors[0];
     const team2 = this.props.competition.competitors[1];
-    console.log("tttt");
-    console.log(team1.score != null);
     const compDate = new Date(this.props.competition.date);
     const display1 =
       team1.score != null ? team1.score.value : compDate.toLocaleDateString();
@@ -111,7 +107,6 @@ class TeamScoreCard extends React.Component {
   async getData(teamString) {
     //Get data
     const keys = teamString.split("!");
-    console.log(keys);
     const schedule = await apis.get_schedule(...keys);
     if (schedule != null) {
       return {
@@ -162,8 +157,6 @@ class TeamScoreCard extends React.Component {
       href = this.state.teamData.team.getLogos()[0];
       backgroundColor = this.state.teamData.team.getColors()[0];
       if (this.state.teamData.games.prev != null) {
-        console.log("comp)");
-        console.log(this.state.teamData.games.prev.competitions[0]);
         prevOrLiveScoreCard = (
           <ScoreCard
             competition={this.state.teamData.games.prev.competitions[0]}
@@ -195,9 +188,6 @@ class TeamScoreCard extends React.Component {
             width: "300px",
             margin: "10px",
             textAlign: "center"
-          }}
-          onChange={() => {
-            console.log("CHanged");
           }}
         >
           <CardImg

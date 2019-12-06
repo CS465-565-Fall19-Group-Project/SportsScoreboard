@@ -186,7 +186,7 @@ class Teams extends React.Component {
                   Hockey
                 </NavLink>
               </NavItem>
-              <input
+              {/*<input
                 onKeyUp={this.searchTeam()}
                 class="mr-sm-2 float-right"
                 id="search-bar"
@@ -194,7 +194,7 @@ class Teams extends React.Component {
                 name="search-bar"
                 placeholder="Search Teams"
                 aria-label="Search"
-              />
+              />*/}
             </Nav>
           </Collapse>
         </Navbar>
