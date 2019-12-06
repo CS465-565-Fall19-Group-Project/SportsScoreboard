@@ -1,37 +1,12 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import classnames from "classnames";
 import apis from "./scripts/apis";
-import {
-  Card,
-  CardImg,
-  CardTitle,
-  CardDeck,
-  Table,
-  Image,
-  Input,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Row,
-  Col,
-  Container
-} from "reactstrap";
-import { get } from "http";
+import { Card, CardImg, CardTitle, CardDeck, Row } from "reactstrap";
 
 class ScoreCard extends React.Component {
-  constructor(props) {
-    super(props);
-    console.log("orosd");
-    console.log(props);
-  }
-
   render() {
     const team1 = this.props.competition.competitors[0];
     const team2 = this.props.competition.competitors[1];
-    console.log("tttt");
-    console.log(team1.score != null);
     const compDate = new Date(this.props.competition.date);
     const display1 =
       team1.score != null ? team1.score.value : compDate.toLocaleDateString();
@@ -111,7 +86,6 @@ class TeamScoreCard extends React.Component {
   async getData(teamString) {
     //Get data
     const keys = teamString.split("!");
-    console.log(keys);
     const schedule = await apis.get_schedule(...keys);
     if (schedule != null) {
       return {
@@ -162,8 +136,6 @@ class TeamScoreCard extends React.Component {
       href = this.state.teamData.team.getLogos()[0];
       backgroundColor = this.state.teamData.team.getColors()[0];
       if (this.state.teamData.games.prev != null) {
-        console.log("comp)");
-        console.log(this.state.teamData.games.prev.competitions[0]);
         prevOrLiveScoreCard = (
           <ScoreCard
             competition={this.state.teamData.games.prev.competitions[0]}
@@ -196,9 +168,6 @@ class TeamScoreCard extends React.Component {
             margin: "10px",
             textAlign: "center"
           }}
-          onChange={() => {
-            console.log("CHanged");
-          }}
         >
           <CardImg
             top
@@ -222,7 +191,7 @@ class TeamScoreCard extends React.Component {
 
 const Scoreboard = ({ teamTracker }) => {
   const trackedTeams = teamTracker.getTeams();
-  if (trackedTeams.length == 0) {
+  if (trackedTeams.length === 0) {
     return (
       <Row
         className="justify-content-md-center"

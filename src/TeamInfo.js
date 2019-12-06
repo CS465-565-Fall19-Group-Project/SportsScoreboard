@@ -1,8 +1,7 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
 import apis from "./scripts/apis";
 import "bootstrap/dist/css/bootstrap.css";
-import { Container, ListGroup, ListGroupItem, Row, Col } from "reactstrap";
+import { Container } from "reactstrap";
 
 class TeamInfo extends React.Component {
   constructor(props) {
@@ -174,6 +173,10 @@ class TeamInfo extends React.Component {
     var statsAnchor = document.getElementById("stats-anchor");
     var scheduleAnchor = document.getElementById("schedule-anchor");
     this.parseUrl(statsAnchor, scheduleAnchor);
+  }
+
+  componentWillUnmount() {
+    document.body.style.backgroundColor = "white";
   }
 
   render() {

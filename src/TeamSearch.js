@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import classnames from "classnames";
 import apis from "./scripts/apis";
-import Scoreboard from "./Scoreboard";
 import {
   Card,
   CardImg,
   CardTitle,
-  Table,
-  Image,
   Input,
   Button,
   Form,
@@ -19,6 +15,11 @@ import {
   Container
 } from "reactstrap";
 
+/**
+ * React component representing the search bar that can filter teams by sport, league, and a search term.
+ * Will do an API call to get all teams under the provided sport and league, then filter all teams on
+ * the search term (looking for matches in team display name or abbreviation)
+ */
 const TeamSearchBar = ({ fieldToFuncDictionary }) => {
   return (
     <Container>
@@ -76,25 +77,12 @@ const TeamSearchBar = ({ fieldToFuncDictionary }) => {
   );
 };
 
-const TeamSearchTable = ({ fieldToFuncDictionary }) => {
-  return (
-    <Container>
-      <Row className="justify-content-md-center">
-        <Table striped>
-          <thead>
-            <tr>
-              <th style={{ width: "5%" }}>Track</th>
-              <th>Selected</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>{fieldToFuncDictionary["teams"].getRows()}</tbody>
-        </Table>
-      </Row>
-    </Container>
-  );
-};
-
+/**
+ * React component representing grid of cards populated by search results of TeamSearchBar
+ * Most of the work is done in the fieldToFuncDictionary.teams.getCards() method which resides in
+ * the TeamSearch component. This is done because this class needs access to a bunch of different shared values
+ * so it was easier to implement at higher level (TeamSearch) and pass down to this component
+ */
 const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
   return (
     <Container>
@@ -105,15 +93,22 @@ const TeamSearchGrid = ({ fieldToFuncDictionary }) => {
   );
 };
 
-const EVENTMAPPING = {
+/**
+ * Object representing all possible sport and league combinations. `TEAMSMAPPING[sport][value]` returns the
+ * league value used by the ESPN api calls, as it differs from the abbreviated name in some cases
+ * NOTE: Some of these teams are commented out because their schedules cannot be found with a normal API route,
+ * so using them populates empty scores. Removing for now
+ */
+
+const TEAMSMAPPING = {
   baseball: {
     mlb: "mlb"
   },
   basketball: {
     nba: "nba",
-    wnba: "wnba",
-    ncaam: "mens-college-basketball",
-    ncaaw: "womens-college-basketball"
+    wnba: "wnba"
+    /*ncaam: "mens-college-basketball",
+    ncaaw: "womens-college-basketball"*/
   },
   football: {
     nfl: "nfl",
@@ -121,16 +116,27 @@ const EVENTMAPPING = {
   },
   hockey: {
     nhl: "nhl"
-  },
-  soccer: {
+  }
+  /*soccer: {
     mls: "usa.1",
     nwsl: "usa.nwsl"
-  }
+  }*/
 };
 
+/**
+ * React component repreesnting the functionality to search and select teams for the scoreboard
+ * Most of the work is in the `data` object which is passed to subcomponents. This is done because
+ * the subcomponents, `TeamSearchBar` and `TeamSearchGrid` both need access to common data values
+ * like the sport and league being searched. It was easier to implement at this higher level and pass
+ * down even though it looks messier that I would like
+ * This module helps track teams when clicked and passes information up to Home component, where information
+ * is also transferred to the Scoreboard tab to populate schedules
+ *
+ * @param {object} teamTracker - Another data object passed down that helps track selected teams.
+ */
 const TeamSearch = ({ teamTracker }) => {
-  let initialSport = Object.keys(EVENTMAPPING)[0];
-  let initialLeague = Object.keys(EVENTMAPPING[initialSport])[0];
+  let initialSport = Object.keys(TEAMSMAPPING)[0];
+  let initialLeague = Object.keys(TEAMSMAPPING[initialSport])[0];
   const [sportValue, setSport] = useState(initialSport);
   const [leagueValue, setLeague] = useState(initialLeague);
   const [searchValue, setSearch] = useState("");
@@ -139,19 +145,19 @@ const TeamSearch = ({ teamTracker }) => {
   const data = {
     sport: {
       getOptions: event => {
-        return Object.keys(EVENTMAPPING).map(value => {
+        return Object.keys(TEAMSMAPPING).map(value => {
           return <option key={value}>{value.toUpperCase()}</option>;
         });
       },
       onChange: event => {
         let choice = event.target.value.toLowerCase();
         setSport(choice);
-        setLeague(Object.keys(EVENTMAPPING[choice])[0]);
+        setLeague(Object.keys(TEAMSMAPPING[choice])[0]);
       }
     },
     league: {
       getOptions: event => {
-        return Object.keys(EVENTMAPPING[sportValue]).map(value => {
+        return Object.keys(TEAMSMAPPING[sportValue]).map(value => {
           return <option key={value}>{value.toUpperCase()}</option>;
         });
       },
@@ -166,7 +172,7 @@ const TeamSearch = ({ teamTracker }) => {
       onSubmit: async event => {
         console.log("Changing teams");
         event.preventDefault();
-        const leagueAbbrev = EVENTMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
+        const leagueAbbrev = TEAMSMAPPING[sportValue][leagueValue]; //Mapping may be different than name of league
         const teams = await apis.get_teams(sportValue, leagueAbbrev);
         if (teams != null) {
           const searchedTeams = teams
@@ -188,45 +194,8 @@ const TeamSearch = ({ teamTracker }) => {
       }
     },
     teams: {
-      //trackedTeams: trackedTeams,
-      /*getRows: () => {
-        if (teamValues.length == 0) {
-          return (
-            <tr>
-              <th scope="row" colSpan="3" style={{ textAlign: "center" }}>
-                No matching teams
-              </th>
-            </tr>
-          );
-        } else {
-          return teamValues.map((tv, index) => {
-            return (
-              <tr
-                key={tv.team.abbreviation}
-                onChange={() => {
-                  console.log("CHanged");
-                }}
-              >
-                <th style={{ textAlign: "center" }}>
-                  <Input
-                    id={`teamSelected${index}`}
-                    type="checkbox"
-                    checked={tv.selected}
-                    onChange={event => {
-                      tv.selected = !tv.selected;
-                      console.log(tv);
-                    }}
-                  />
-                </th>
-                <td>{tv.team.displayName}</td>
-                <td></td>
-              </tr>
-            );
-          });
-        }
-      },*/
       getCards: () => {
-        if (teamValues.length == 0) {
+        if (teamValues.length === 0) {
           return (
             <Row
               className="justify-content-md-center"

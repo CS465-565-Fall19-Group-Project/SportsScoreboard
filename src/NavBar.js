@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Collapse,
   Navbar,
@@ -29,12 +29,6 @@ const NavBar = props => {
               <NavLink tag={Link} to="/Teams/">
                 {" "}
                 Teams{" "}
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink tag={Link} to="/Match-History/">
-                {" "}
-                Match History
               </NavLink>
             </NavItem>
           </Nav>
